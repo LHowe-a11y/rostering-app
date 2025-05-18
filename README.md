@@ -23,8 +23,38 @@ If the settings in rostering-app/.vscode/settings.json bother you, you can chang
 
 ### Install dependencies.
 
-If you don't do this, the site won't work. The project includes a uv.lock file and a pyproject.toml file. You can install the dependencies your own way, the way I prefer is through uv, which you can do like this:
+If you don't do this, the site won't work. The project includes a uv.lock file and a pyproject.toml file. You can install the dependencies your own way, the way I prefer for packages is through uv, which you can do like this:
 
 1. [Install uv](https://docs.astral.sh/uv/getting-started/installation/).
 2. Navigate to the directory of the cloned repo. Should be something along the lines of `something/something/where_you_cloned_the_repo_to/rostering-app`
-3. Create a virtual environment with
+3. Create a virtual environment with `uv venv`
+4. Install packages with `uv sync`
+
+If that method does not work, you could try navigating to the repo directory, and then running `pip install PACKAGE_NAME` for each package. The names needed are in pyproject.toml, but I'll list them here too:
+
+- flask
+
+**Python 3.11 is required for this project.** Please [install Python from the website](https://www.python.org/downloads/), or perhaps use `uv python list` to find the right version and copy-paste into `uv python install COPY_PASTED_VERSION_NAME`.
+
+
+### Run the web app.
+
+Run app.py in the main directory. `python app.py`
+
+
+### Visit the website.
+
+The website should be hosted at 127.0.0.1:5000. On Macs, this port is sometimes occupied. This will cause an error alonmg the lines of "port 5000 already in use". To fix this, disable 'AirPlay Receiver' in settings. The address should appear in the terminal after running app.py, if everything is working correctly. The message should look like this (it might have more information depending on the settings but should include at least this info):
+
+    * Serving Flask app 'appname'
+    * Debug mode: on/off
+    * Running on http://127.0.0.1:5000
+
+#### Congratulations! You have now successfully hosted and accessed the Dental Rostering Tool Web App.
+
+
+
+
+## How to use the web app/rostering tool
+
+guess. (this section is not written yet)
