@@ -16,6 +16,14 @@
         <input type="password" id="password_input" name="password"><br><br>
         <input type="submit" value="Log in">
     </form>
+    <br><br><br><br>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
 </body>
 
 </html>
