@@ -1,4 +1,8 @@
-class Schedule:
+from decimal import Decimal
+from statistics import variance
+
+
+class DentistSchedule:
     def __init__(self, shifts: list) -> None:
         raw_shifts = shifts
         self.monday: list
@@ -86,16 +90,26 @@ class Schedule:
         return number_of_shifts == 2
 
 
-class Employees:
+class EmployeeList:
     # Employees should be a list of dictionaries, each dictionary in the list is an employee.
     # Employee ID number will be their index in the list.
-    # TODO Employee dict values: name,
-    def __init__(self, employees: list):
+    # Employee dict values: name (string), max_hours (int), max_days (int), available_days (list), available_roles (list).
+    def __init__(self, employees: list) -> None:
         self.num_employees = len(employees)
+        self.employees = employees
+
+    def available_employees(self, )
+
+
+"""Classes DentistSchedule and EmployeeList will have methods which give objective data. 
+The 'subjective' calculation -- being which employee is best for a shift -- will be calculated by the Roster class.
+The Roster class will also calculate which shifts are necessary, based on the hard-coded preset rules.
+
+Employee preference will be weighted based on the number of hours already assigned (as shifts should be assigned in chronological order), number of available roles/which available roles, number of shifts of each role available, etc.""" # I AM IN A CRISIS OVER THIS MATHS RIGHT NOW BECAUZSXE I AM A MASSIOVE ENERD AND AM OVERTHINKING IT
 
 
 class Roster:
-    def __init__(self, dentist_schedule: Schedule) -> None:
+    def __init__(self, dentists: DentistSchedule, employees: EmployeeList) -> None:
         pass
 
     def create_roster(self):
