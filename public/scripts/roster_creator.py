@@ -41,12 +41,57 @@ class Schedule:
                 case 6:
                     self.saturday.append(shift)
 
-                # I regrettably find myself needing something like this more often than rarely
+                # Error catching
                 case _:
                     raise TypeError(
-                        "A shift has not been successfully turned into a list of integers.",
+                        "A shift has not been successfully turned into a list of integers, or was not 1-6.",
                         shift,
                     )
+
+        if (
+            len(self.monday) > 2
+            or len(self.tuesday) > 2
+            or len(self.wednesday) > 2
+            or len(self.thursday) > 2
+            or len(self.friday) > 2
+            or len(self.saturday) > 2
+        ):
+            raise SyntaxError(
+                "More than two dentists shifted in one day, this exceeds the minimum requirements and is not included in program!"
+            )
+
+    def int_to_day_list(self, integer: int) -> list:
+        match integer:
+            case 1:
+                return self.monday
+            case 2:
+                return self.tuesday
+            case 3:
+                return self.wednesday
+            case 4:
+                return self.thursday
+            case 5:
+                return self.friday
+            case 6:
+                return self.saturday
+            case _:
+                raise ValueError("Day integer was not 1-6", integer)
+
+    def no_shifts(self, day: int) -> bool:
+        number_of_shifts = len(self.int_to_day_list(day))
+        return number_of_shifts == 0
+
+    def double_shifts(self, day: int) -> bool:
+        number_of_shifts = len(self.int_to_day_list(day))
+        return number_of_shifts == 2
+
+
+class Employees:
+    # Employees should be a list of dictionaries, each dictionary in the list is an employee.
+    # Employee ID number will be their index in the list.
+    # TODO Employee dict values: name,
+    def __init__(self, employees: list):
+        self.num_employees = len(employees)
 
 
 class Roster:
