@@ -33,6 +33,27 @@ def login():
             return redirect("/")
 
 
+@app.route("/signup", methods=["POST", "GET"])
+def sign_up():
+    if request.method == "GET":
+        return render_template("signup.html")
+    elif request.method == "POST":
+        username = request.form("username")
+        password = request.form("password")
+        password_two = request.form("confirm_password")
+        # TODO Things are sanitised
+        if username != "unique":
+            flash("Username taken", "error")
+            return render_template("signup.html")
+        if not password == password_two:
+            flash("Passwords do not match.", "error")
+            return render_template("signup.html")
+
+        # TODO add account to database
+        flash("Account successfully created, feel free to log in", "message")
+        return redirect("/login")
+
+
 if __name__ == "__main__":
     app.secret_key = os.urandom(24)
     app.run(debug=True)
