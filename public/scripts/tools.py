@@ -1,7 +1,9 @@
 from decimal import Decimal
 from statistics import variance
+import html
 
-
+def sanitise_input(input: str):
+    return html.escape(input, True)
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
         raw_shifts = shifts
