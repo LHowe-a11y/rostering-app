@@ -1,5 +1,6 @@
 from flask import Flask, request, session, redirect, flash, render_template
 import os
+import public.scripts.tools as tools
 
 app = Flask(__name__)
 
@@ -16,8 +17,8 @@ def home():
 @app.route("/login", methods=["POST", "GET"])  # type: ignore
 def login():
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
+        username = tools.sanitise_input(request.form["username"])
+        password = tools.sanitise_input(request.form["password"])
         # TODO make a real sign up page and real logins with input sanitisation
         if username == "admin" and password == "123456":
             session["logged_in"] = True
@@ -38,10 +39,10 @@ def sign_up():
     if request.method == "GET":
         return render_template("signup.html")
     elif request.method == "POST":
-        username = request.form("username")
-        password = request.form("password")
-        password_two = request.form("confirm_password")
-        # TODO Things are sanitised
+        username = tools.sanitise_input(request.form("username"))
+        password = tools.sanitise_input(request.form("password"))
+        password_two = tools.sanitise_input(request.form("confirm_password"))
+        # TODO Detect username taken
         if username != "unique":
             flash("Username taken", "error")
             return render_template("signup.html")
