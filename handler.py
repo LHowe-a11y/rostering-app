@@ -11,7 +11,7 @@ class AccountsManager:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
         cursor.execute(
-            "INSERT INTO accounts (username,password) VALUES (?,?)",
+            "INSERT INTO accounts (username,password) VALUES (?,?)", # Maybe will need quotation marks here, could make f string
             (username, hashed_password),
         )
         db.commit()
@@ -22,7 +22,7 @@ class AccountsManager:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
         res = cursor.execute(
-            f"SELECT * FROM accounts WHERE username = {username}"
+            f"SELECT * FROM accounts WHERE username = '{username}'"
         )
         if len(res.fetchall()) > 1:
             abc = res.fetchall()
@@ -32,15 +32,16 @@ class AccountsManager:
             db.close()
             return (False, 1)
         res = cursor.execute(
-            f"SELECT password FROM accounts WHERE username = {username}"
+            f"SELECT password FROM accounts WHERE username = '{username}'"
         )
         fetch = res.fetchone()
         password_hash = fetch[0]
+        print(password_hash)
         if not check_hash(password, password_hash):
             db.close()
             return (False, 2)
         res = cursor.execute(
-            f"SELECT id FROM accounts WHERE username = {username}"
+            f"SELECT id FROM accounts WHERE username = '{username}'"
         )
         user_id = res.fetchone()[0]
         db.close()
@@ -60,7 +61,7 @@ class AccountsManager:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
         res = cursor.execute(
-            f"SELECT * FROM accounts WHERE username = {username}"
+            f"SELECT * FROM accounts WHERE username = '{username}'"
         )
         if res.fetchone() is None:
             db.close()

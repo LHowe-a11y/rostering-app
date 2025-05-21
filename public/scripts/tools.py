@@ -1,5 +1,5 @@
-from decimal import Decimal
-from statistics import variance
+# from decimal import Decimal
+# from statistics import variance
 import html
 import bcrypt
 
@@ -111,7 +111,7 @@ class EmployeeList:
         self.num_employees = len(employees)
         self.employees = employees
 
-    def available_employees(self, )
+    # def available_employees(self, )
 
 
 """Classes DentistSchedule and EmployeeList will have methods which give objective data. 

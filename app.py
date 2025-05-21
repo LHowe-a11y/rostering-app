@@ -5,7 +5,7 @@ from handler import AccountsManager
 
 app = Flask(__name__)
 
-manager: AccountsManager
+manager = AccountsManager()
 
 @app.route("/")
 def home():
@@ -21,7 +21,7 @@ def login():
     if request.method == "POST":
         username = sanitise(request.form["username"])
         password = sanitise(request.form["password"])
-        user_details = manager.verify_login(username, password)  # noqa: F821
+        user_details = manager.verify_login(username, password)  
         if user_details[0]:
             session["logged_in"] = True
             session["id"] = user_details[1]
@@ -45,14 +45,14 @@ def sign_up():
         password = sanitise(request.form["password"])
         password_two = sanitise(request.form["confirm_password"])
         # TODO Detect username taken
-        if not manager.username_is_unique(username):  # noqa: F821
-            flash("Username taken", "error")
+        if not manager.username_is_unique(username): 
+            flash("Username is taken.", "error")
             return render_template("signup.html")
         if not password == password_two:
             flash("Passwords do not match.", "error")
             return render_template("signup.html")
-        manager.create_account(username, password)  # noqa: F821
-        flash("Account successfully created, feel free to log in", "message")
+        manager.create_account(username, password) 
+        flash("Account successfully created, feel free to log in.", "message")
         return redirect("/login")
 
 
