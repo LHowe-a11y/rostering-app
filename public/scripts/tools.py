@@ -1,9 +1,20 @@
 from decimal import Decimal
 from statistics import variance
 import html
+import bcrypt
 
-def sanitise_input(input: str):
+def sanitise(input: str) -> str:
     return html.escape(input, True)
+
+def hash(input:str) -> str:
+    bytestring = input.encode("utf-8")
+    salt = bcrypt.gensalt()
+    hash = bcrypt.hash(bytestring, salt)
+    return hash
+
+def check_hash(input: str, hash: str) -> bool:
+    bytestring = input.encode("utf-8")
+    return bcrypt.checkpw(bytestring, hash)
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
         raw_shifts = shifts
