@@ -1,9 +1,11 @@
 from flask import Flask, request, session, redirect, flash, render_template
 import os
 from public.scripts.tools import sanitise
+from handler import AccountsManager
 
 app = Flask(__name__)
 
+manager: AccountsManager
 
 @app.route("/")
 def home():
@@ -19,11 +21,11 @@ def login():
     if request.method == "POST":
         username = sanitise(request.form["username"])
         password = sanitise(request.form["password"])
-        # TODO make a real sign up page and real logins with input sanitisation
-        if username == "admin" and password == "123456":
+        user_details = manager.verify_login(username, password)  # noqa: F821
+        if user_details[0]:
             session["logged_in"] = True
-            session["username"] = username
-            # TODO implement secure session management with secret key? permanent sessins and session timeouts
+            session["id"] = user_details[1]
+            # TODO implement secure session management with permanent sessions and session timeouts
         else:
             flash("Incorrect username or password.", "error")
         return redirect("/")
@@ -34,14 +36,14 @@ def login():
             return redirect("/")
 
 
-@app.route("/signup", methods=["POST", "GET"])
+@app.route("/signup", methods=["POST", "GET"]) # type: ignore
 def sign_up():
     if request.method == "GET":
         return render_template("signup.html")
     elif request.method == "POST":
-        username = sanitise(request.form("username"))
-        password = sanitise(request.form("password"))
-        password_two = sanitise(request.form("confirm_password"))
+        username = sanitise(request.form["username"])
+        password = sanitise(request.form["password"])
+        password_two = sanitise(request.form["confirm_password"])
         # TODO Detect username taken
         if username != "unique":
             flash("Username taken", "error")

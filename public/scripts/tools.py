@@ -6,13 +6,13 @@ import bcrypt
 def sanitise(input: str) -> str:
     return html.escape(input, True)
 
-def hash(input:str) -> str:
+def hash(input:str) -> bytes:
     bytestring = input.encode("utf-8")
     salt = bcrypt.gensalt()
-    hash = bcrypt.hash(bytestring, salt)
+    hash = bcrypt.hashpw(bytestring, salt)
     return hash
 
-def check_hash(input: str, hash: str) -> bool:
+def check_hash(input: str, hash: bytes) -> bool:
     bytestring = input.encode("utf-8")
     return bcrypt.checkpw(bytestring, hash)
 class DentistSchedule:
