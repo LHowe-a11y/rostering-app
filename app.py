@@ -44,7 +44,6 @@ def sign_up():
         username = sanitise(request.form["username"])
         password = sanitise(request.form["password"])
         password_two = sanitise(request.form["confirm_password"])
-        # TODO Detect username taken
         if not manager.username_is_unique(username): 
             flash("Username is taken.", "error")
             return render_template("signup.html")
