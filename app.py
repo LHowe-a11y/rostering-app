@@ -45,14 +45,13 @@ def sign_up():
         password = sanitise(request.form["password"])
         password_two = sanitise(request.form["confirm_password"])
         # TODO Detect username taken
-        if username != "unique":
+        if not manager.username_is_unique(username):  # noqa: F821
             flash("Username taken", "error")
             return render_template("signup.html")
         if not password == password_two:
             flash("Passwords do not match.", "error")
             return render_template("signup.html")
-
-        # TODO add account to database
+        manager.create_account(username, password)  # noqa: F821
         flash("Account successfully created, feel free to log in", "message")
         return redirect("/login")
 
