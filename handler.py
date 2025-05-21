@@ -24,7 +24,7 @@ class AccountsManager:
         res = cursor.execute(
             f"SELECT * FROM accounts WHERE username = {username}"
         )
-        if len(cursor.fetchall()) > 1:
+        if len(res.fetchall()) > 1:
             abc = res.fetchall()
             db.close()
             raise Exception("More than one account with username", abc)
@@ -45,4 +45,27 @@ class AccountsManager:
         user_id = res.fetchone()[0]
         db.close()
         return (True, user_id)
+    
+    def fetch_username(self, id: int) -> str:
+        db = sql.connect(".database/accounts.db")
+        cursor = db.cursor()
+        res = cursor.execute(
+            f"SELECT username FROM accounts WHERE id = {id}"
+        )
+        username = res.fetchone()[0]
+        db.close()
+        return username
+    
+    def username_is_unique(self, username: str) -> bool:
+        db = sql.connect(".database/accounts.db")
+        cursor = db.cursor()
+        res = cursor.execute(
+            f"SELECT * FROM accounts WHERE username = {username}"
+        )
+        if res.fetchone() is None:
+            db.close()
+            return True
+        else:
+            db.close()
+            return False
 
