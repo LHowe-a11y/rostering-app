@@ -18,34 +18,29 @@ class AccountsManager:
         db.close()
         return
     
-    def verify_login(self, username: str, password: str) -> tuple:
+    def verify_login(self, username: str, password: str) -> bool:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
+        # raise Exception(db, cursor)
         res = cursor.execute(
-            f"SELECT * FROM accounts WHERE username = '{username}'"
+            f"SELECT * FROM accounts WHERE username == '{username}';"
         )
-        if len(res.fetchall()) > 1:
-            abc = res.fetchall()
+        user_details = res.fetchall()
+        if len(user_details) > 1:
+            abc = user_details
             db.close()
             raise Exception("More than one account with username", abc)
-        elif res.fetchone() is None:
+        elif len(user_details) == 0 or user_details is None:
             db.close()
-            return (False, 1)
+            return False
         res = cursor.execute(
             f"SELECT password FROM accounts WHERE username = '{username}'"
         )
         fetch = res.fetchone()
         password_hash = fetch[0]
-        print(password_hash)
-        if not check_hash(password, password_hash):
-            db.close()
-            return (False, 2)
-        res = cursor.execute(
-            f"SELECT id FROM accounts WHERE username = '{username}'"
-        )
-        user_id = res.fetchone()[0]
+        print(password_hash) # debug
         db.close()
-        return (True, user_id)
+        return check_hash(password, password_hash)
     
     def fetch_username(self, id: int) -> str:
         db = sql.connect(".database/accounts.db")
@@ -56,6 +51,20 @@ class AccountsManager:
         username = res.fetchone()[0]
         db.close()
         return username
+    
+    def user_id(self, username: str, password: str) -> int:
+        if self.verify_login(username, password):
+            db = sql.connect(".database/accounts.db")
+            cursor = db.cursor()
+            res = cursor.execute(
+            f"SELECT id FROM accounts WHERE username = '{username}'"
+            )
+            user_id = res.fetchone()[0]
+            db.close()
+            return user_id
+        else:
+            raise ValueError("User wasn't valid to fetch id")
+        
     
     def username_is_unique(self, username: str) -> bool:
         db = sql.connect(".database/accounts.db")

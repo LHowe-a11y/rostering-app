@@ -10,7 +10,12 @@ manager = AccountsManager()
 @app.route("/")
 def home():
     if session.get("logged_in"):
-        name = session.get("username")
+        id = session.get("id")
+        if id is None or id == 0:
+            session["logged_in"] = False
+            flash("You were logged in to an invalid account.", "error")
+            return redirect("/login")
+        name = manager.fetch_username(id)
         return "Logged in, %s" % name
     else:
         return redirect("/login")
@@ -21,10 +26,9 @@ def login():
     if request.method == "POST":
         username = sanitise(request.form["username"])
         password = sanitise(request.form["password"])
-        user_details = manager.verify_login(username, password)  
-        if user_details[0]:
+        if manager.verify_login(username, password):
             session["logged_in"] = True
-            session["id"] = user_details[1]
+            session["id"] = manager.user_id(username, password)
             # TODO implement secure session management with permanent sessions and session timeouts
         else:
             flash("Incorrect username or password.", "error")
