@@ -1,7 +1,20 @@
-from decimal import Decimal
-from statistics import variance
+# from decimal import Decimal
+# from statistics import variance
+import html
+import bcrypt
 
+def sanitise(input: str) -> str:
+    return html.escape(input, True)
 
+def hash(input:str) -> bytes:
+    bytestring = input.encode("utf-8")
+    salt = bcrypt.gensalt()
+    hash = bcrypt.hashpw(bytestring, salt)
+    return hash
+
+def check_hash(input: str, hash: bytes) -> bool:
+    bytestring = input.encode("utf-8")
+    return bcrypt.checkpw(bytestring, hash)
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
         raw_shifts = shifts
@@ -98,7 +111,7 @@ class EmployeeList:
         self.num_employees = len(employees)
         self.employees = employees
 
-    def available_employees(self, )
+    # def available_employees(self, )
 
 
 """Classes DentistSchedule and EmployeeList will have methods which give objective data. 
