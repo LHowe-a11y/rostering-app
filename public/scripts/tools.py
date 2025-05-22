@@ -105,11 +105,25 @@ class DentistSchedule:
 
 class EmployeeList:
     # Employees should be a list of dictionaries, each dictionary in the list is an employee.
-    # Employee ID number will be their index in the list.
     # Employee dict values: name (string), max_hours (int), max_days (int), available_days (list), available_roles (list).
     def __init__(self, employees: list) -> None:
         self.num_employees = len(employees)
         self.employees = employees
+        self.employee_hours_template = {}
+        for person in self.employees:
+            self.employee_hours_template[person["name"]] = 0
+        
+    # A shift should be day: 1,2,3...  start: 0000   end: 2359   role: receptionist, assistant_one, runner...
+    # This list does not take into account maximum hours/days, the Roster class will retain this information, as this class should remain static in info
+    def fetch_available_employees(self, shift: dict, employee_hours: dict):
+        possibilities = []
+        for person in self.employees:
+            if shift["day"] in person["available_days"] and shift["role"] in person["available_roles"]:
+                shift_length = (shift["end"] - shift["start"])/60
+                hours_worked = employee_hours[person["name"]]
+                if hours_worked + shift_length <= person["max_hours"]:
+                    possibilities.append(person)
+        return possibilities
 
     # def available_employees(self, )
 
