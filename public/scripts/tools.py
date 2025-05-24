@@ -3,18 +3,23 @@
 import html
 import bcrypt
 
+
 def sanitise(input: str) -> str:
     return html.escape(input, True)
 
-def hash(input:str) -> bytes:
+
+def hash(input: str) -> bytes:
     bytestring = input.encode("utf-8")
     salt = bcrypt.gensalt()
     hash = bcrypt.hashpw(bytestring, salt)
     return hash
 
+
 def check_hash(input: str, hash: bytes) -> bool:
     bytestring = input.encode("utf-8")
     return bcrypt.checkpw(bytestring, hash)
+
+
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
         raw_shifts = shifts
@@ -105,25 +110,58 @@ class DentistSchedule:
 
 class EmployeeList:
     # Employees should be a list of dictionaries, each dictionary in the list is an employee.
-    # Employee ID number will be their index in the list.
     # Employee dict values: name (string), max_hours (int), max_days (int), available_days (list), available_roles (list).
     def __init__(self, employees: list) -> None:
         self.num_employees = len(employees)
         self.employees = employees
+        self.employee_hours_template = {}
+        for person in self.employees:
+            self.employee_hours_template[person["name"]] = 0
+        self.employee_days_template = {}
+        for person in self.employees:
+            self.employee_days_template[person["name"]] = 0
 
-    # def available_employees(self, )
+    # A shift should be day: "monday", "tuesday",...  start: 0000   end: 2359   role: receptionist, assistant_one, runner...
+    def fetch_available_employees(
+        self, shift: dict, employee_hours: dict, employee_days: dict
+    ):
+        possibilities = []
+        for person in self.employees:
+            if (
+                shift["day"] in person["available_days"]
+                and shift["role"] in person["available_roles"]
+            ):
+                days = len(employee_days[person["name"]])
+                if (
+                    days < person["max_days"]
+                    and shift["day"] not in employee_days[person["name"]]
+                ):
+                    shift_length = (shift["end"] - shift["start"]) / 60
+                    hours_worked = employee_hours[person["name"]]
+                    if hours_worked + shift_length <= person["max_hours"]:
+                        possibilities.append(person)
+        return possibilities
 
 
 """Classes DentistSchedule and EmployeeList will have methods which give objective data. 
 The 'subjective' calculation -- being which employee is best for a shift -- will be calculated by the Roster class.
 The Roster class will also calculate which shifts are necessary, based on the hard-coded preset rules.
 
-Employee preference will be weighted based on the number of hours already assigned (as shifts should be assigned in chronological order), number of available roles/which available roles, number of shifts of each role available, etc.""" # I AM IN A CRISIS OVER THIS MATHS RIGHT NOW BECAUZSXE I AM A MASSIOVE ENERD AND AM OVERTHINKING IT
+Employee preference will be weighted based on the number of hours already assigned (as shifts should be assigned in chronological order), number of available roles/which available roles, number of shifts of each role available, etc."""  # I AM IN A CRISIS OVER THIS MATHS RIGHT NOW BECAUZSXE I AM A MASSIOVE ENERD AND AM OVERTHINKING IT
 
 
 class Roster:
+    DAYS = ()
+
     def __init__(self, dentists: DentistSchedule, employees: EmployeeList) -> None:
-        pass
+        self.dentists = dentists
+        self.employees = employees
+        self.employee_hours = self.employees.employee_hours_template
+        self.employee_days = self.employees.employee_days_template
+        self.iterations = 0
+        self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning emplyee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
+        self.schedule = []
+        # Calculate the shifts for self.schedule here
 
     def create_roster(self):
         pass
