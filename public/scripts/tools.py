@@ -22,7 +22,7 @@ def check_hash(input: str, hash: bytes) -> bool:
 
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
-        raw_shifts = shifts
+        # raw_shifts = shifts
         self.monday: list
         self.tuesday: list
         self.wednesday: list
@@ -32,41 +32,40 @@ class DentistSchedule:
 
         """This section sorts and formats each shift for easier processing"""
 
-        # Sort the shifts chronologically
-        raw_shifts.sort()
-        # Split each shift into its own list of parts
-        self.shifts = list(map(lambda x: x.split(":"), raw_shifts))
+        # # Sort the shifts chronologically
+        # raw_shifts.sort()
+        # # Split each shift into its own list of parts
+        # self.shifts = list(map(lambda x: x.split(":"), raw_shifts))
 
         # Shifts are in the form Day:Start:End:Dentist e.g. 1:0830:1300:2 would mean Monday, 8:30 am to 1:00 pm, Dentist 2.
+        # TODO change shifts into form {"day": "monday", "start": 13.75, "end": 29.25, "id": 2}
 
-        for shift in self.shifts:  # For each shift in the total list of shifts
+        for shift in shifts:  # For each shift in the total list of shifts
             # Turn each part of the shift into an integer to allow mathematics
-            for item in shift:
-                item = int(item)
             # Add the shift to a sub-list of shifts per-day
-            match shift[0]:
-                case 1:
+            match shift["day"]:
+                case "monday":
                     self.monday.append(shift)
 
-                case 2:
+                case "tuesday":
                     self.tuesday.append(shift)
 
-                case 3:
+                case "wednesday":
                     self.wednesday.append(shift)
 
-                case 4:
+                case "thursday":
                     self.thursday.append(shift)
 
-                case 5:
+                case "friday":
                     self.friday.append(shift)
 
-                case 6:
+                case "saturday":
                     self.saturday.append(shift)
 
                 # Error catching
                 case _:
                     raise TypeError(
-                        "A shift has not been successfully turned into a list of integers, or was not 1-6.",
+                        "A shift day is not a string monday-saturday",
                         shift,
                     )
 
@@ -121,7 +120,7 @@ class EmployeeList:
         for person in self.employees:
             self.employee_days_template[person["name"]] = 0
 
-    # A shift should be day: "monday", "tuesday",...  start: 0000   end: 2359   role: receptionist, assistant_one, runner...
+    # A shift should be day: "monday", "tuesday",...  start: 0.0   end: 23.75   role: receptionist, assistant_one, runner...
     def fetch_available_employees(
         self, shift: dict, employee_hours: dict, employee_days: dict
     ):
@@ -136,7 +135,7 @@ class EmployeeList:
                     days < person["max_days"]
                     and shift["day"] not in employee_days[person["name"]]
                 ):
-                    shift_length = (shift["end"] - shift["start"]) / 60
+                    shift_length = shift["end"] - shift["start"]
                     hours_worked = employee_hours[person["name"]]
                     if hours_worked + shift_length <= person["max_hours"]:
                         possibilities.append(person)
@@ -159,9 +158,23 @@ class Roster:
         self.employee_hours = self.employees.employee_hours_template
         self.employee_days = self.employees.employee_days_template
         self.iterations = 0
-        self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning emplyee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
+        self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning employee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
         self.schedule = []
         # Calculate the shifts for self.schedule here
+        if self.dentists.no_shifts(1):
+            pass
+        elif self.dentists.double_shifts(1):
+            pass
+        else:
+            pass
+        for dental_shift in self.dentists.monday:
+            new_shift = {
+                "day": "monday",
+                "start": dental_shift["start"] - 0.5,
+                "end": dental_shift["end"] + 0.25,
+                "role": "assistant_" + str(dental_shift["id"]),
+            }
+            self.schedule.append(new_shift)
 
     def create_roster(self):
         pass
