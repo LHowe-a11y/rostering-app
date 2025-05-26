@@ -161,20 +161,65 @@ class Roster:
         self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning employee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
         self.schedule = []
         # Calculate the shifts for self.schedule here
-        if self.dentists.no_shifts(1):
-            pass
-        elif self.dentists.double_shifts(1):
-            pass
-        else:
-            pass
-        for dental_shift in self.dentists.monday:
-            new_shift = {
-                "day": "monday",
-                "start": dental_shift["start"] - 0.5,
-                "end": dental_shift["end"] + 0.25,
-                "role": "assistant_" + str(dental_shift["id"]),
-            }
-            self.schedule.append(new_shift)
+        self.days_of_week = (
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        )
+        self.days_constructed = 0
+        for day in self.days_of_week:
+            self.days_constructed += 1
+            if self.dentists.no_shifts(self.days_constructed):
+                pass
+            elif self.dentists.double_shifts(self.days_constructed):
+                new_shift = {
+                    "day": day,
+                    "start": 8.5,
+                    "end": 16.0,
+                    "role": "runner",
+                }
+                self.schedule.append(new_shift)
+
+                dentist_one = self.dentists.int_to_day_list(self.days_constructed)[0]
+                dentist_two = self.dentists.int_to_day_list(self.days_constructed)[1]
+
+                if dentist_one["start"] <= dentist_two["start"]:
+                    start_time = dentist_one["start"] + 0.5
+                else:
+                    start_time = dentist_two["start"] + 0.5
+
+                if dentist_one["end"] >= dentist_two["end"]:
+                    end_time = dentist_one["end"]
+                else:
+                    end_time = dentist_two["end"]
+
+                new_shift = {
+                    "day": day,
+                    "start": start_time,
+                    "end": end_time,
+                    "role": "receptionist",
+                }
+                self.schedule.append(new_shift)
+            else:
+                dentist = self.dentists.int_to_day_list(self.days_constructed)[0]
+                new_shift = {
+                    "day": day,
+                    "start": dentist["start"] + 0.5,
+                    "end": dentist["end"],
+                    "role": "receptionist",
+                }
+                self.schedule.append(new_shift)
+            for dental_shift in self.dentists.int_to_day_list(self.days_constructed):
+                new_shift = {
+                    "day": day,
+                    "start": dental_shift["start"] - 0.5,
+                    "end": dental_shift["end"] + 0.25,
+                    "role": "assistant_" + str(dental_shift["id"]),
+                }
+                self.schedule.append(new_shift)
 
     def create_roster(self):
         pass
