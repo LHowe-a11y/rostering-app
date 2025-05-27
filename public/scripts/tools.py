@@ -163,6 +163,7 @@ class Roster:
         self.employee_days = self.employees.employee_days_template
         self.iterations = 0
         self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning employee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
+        self.variances = {}
         self.schedule = []
         # Calculate the shifts for self.schedule here
         self.days_of_week = (
@@ -230,6 +231,7 @@ class Roster:
         n = 100
         min_calculated = 1  # should be  later decided by user
 
+        # All potential rosters are calculated in this loop
         while True:
             # calculation of n = 100
             for i in range(1, n + 1):
@@ -273,17 +275,22 @@ class Roster:
                 variance = statistics.variance(all_hours)
 
                 # store used "seed" and variance as dict key-value pair
-                self.calculated_rosters.append(
-                    {
-                        seed: variance,
-                    }
-                )
+                self.calculated_rosters.append(seed)
+                self.variances[seed] = variance
+            self.last_seed += n
 
             # check dict to see if any valid rosters have been found, if not try again, if yes continue
             if len(self.calculated_rosters) >= min_calculated:
                 break
+            # TODO
+            # if timeout:
+            #     error message
+            #     break/return whatever
 
         # sort dict by variance ascending
+        self.calculated_rosters = sorted(
+            self.calculated_rosters, key=lambda x: self.variances[x]
+        )
 
         # pick first dict value (maybe introduce a minimum fairness/maximum variance value user can input)
 
