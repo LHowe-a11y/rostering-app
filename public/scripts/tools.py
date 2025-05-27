@@ -228,60 +228,60 @@ class Roster:
     def create_roster(self):
         # necessary declarations/definitions of variables etc
         n = 100
+        min_calculated = 1  # should be  later decided by user
 
-        # calculation of n (let's say 100 by default, but can be customised by user (maybe user can enter int x, and n = 100 * 10**x)) permutations
-        for i in range(1, n + 1):
-            seed = i + self.last_seed
-            self.r.seed(seed)
+        while True:
+            # calculation of n = 100
+            for i in range(1, n + 1):
+                seed = i + self.last_seed
+                self.r.seed(seed)
 
-            # calculate one permutation with a seed (maybe we grab the people with the lowest hours, if it's a tie, we pick randomly using seed, this would create more inital variation, yet still attempt to keep very fair)
-            for shift in self.schedule:
-                available = self.employees.fetch_available_employees(
-                    shift, self.employee_hours, self.employee_days
+                # calculate one permutation with a seed (maybe we grab the people with the lowest hours, if it's a tie, we pick randomly using seed, this would create more inital variation, yet still attempt to keep very fair)
+                for shift in self.schedule:
+                    available = self.employees.fetch_available_employees(
+                        shift, self.employee_hours, self.employee_days
+                    )
+                    if len(available) == 0:
+                        raise Exception(
+                            "I haven't programmed this bit yet"
+                        )  # TODO create new attempt
+                    elif len(available) == 1:
+                        assigned_employee = available[0]
+                    else:
+                        sorted_available = sorted(
+                            available, key=lambda x: self.employee_hours[x["name"]]
+                        )  # Sorts from current assigned hours low to high, still in list of employee dict form
+                        lowest_hours = self.employee_hours[sorted_available[0]["name"]]
+                        tied_lowest = []
+                        for employee in sorted_available:
+                            if self.employee_hours[employee["name"]] == lowest_hours:
+                                tied_lowest.append(employee)
+                            else:
+                                break
+                        choice = self.r.randint(0, len(tied_lowest) - 1)
+                        assigned_employee = tied_lowest[choice]
+
+                    # shift["assignee"] = assigned_employee
+                    hours = shift["end"] - shift["start"]
+                    self.employee_hours[assigned_employee["name"]] += hours
+                    self.employee_days[assigned_employee["name"]].append(shift["day"])
+
+                # calculate variance
+                all_hours = []
+                for x in self.employee_hours:
+                    all_hours.append(self.employee_hours[x])
+                variance = statistics.variance(all_hours)
+
+                # store used "seed" and variance as dict key-value pair
+                self.calculated_rosters.append(
+                    {
+                        seed: variance,
+                    }
                 )
-                if len(available) == 0:
-                    raise Exception(
-                        "I haven't programmed this bit yet"
-                    )  # TODO create new attempt
-                elif len(available) == 1:
-                    assigned_employee = available[0]
-                else:
-                    sorted_available = sorted(
-                        available, key=lambda x: self.employee_hours[x["name"]]
-                    )  # Sorts from current assigned hours low to high, still in list of employee dict form
-                    lowest_hours = self.employee_hours[sorted_available[0]["name"]]
-                    tied_lowest = []
-                    for employee in sorted_available:
-                        if self.employee_hours[employee["name"]] == lowest_hours:
-                            tied_lowest.append(employee)
-                        else:
-                            break
-                    choice = self.r.randint(0, len(tied_lowest) - 1)
-                    assigned_employee = tied_lowest[choice]
 
-                # shift["assignee"] = assigned_employee
-                hours = shift["end"] - shift["start"]
-                self.employee_hours[assigned_employee["name"]] += hours
-                self.employee_days[assigned_employee["name"]].append(shift["day"])
-
-            # calculate variance
-            all_hours = []
-            for x in self.employee_hours:
-                all_hours.append(self.employee_hours[x])
-            variance = statistics.variance(all_hours)
-            self.calculated_rosters.append(
-                {
-                    seed: variance,
-                }
-            )
-
-            # store used "seed" and variance as dict key-value pair
-
-            # store seed in separate list (so it isn't in dict if it fails, but no matter what will not be tried again)
-
-            # iterate n times
-
-        # check dict to see if any valid rosters have been found, if not try again, if yes continue
+            # check dict to see if any valid rosters have been found, if not try again, if yes continue
+            if len(self.calculated_rosters) >= min_calculated:
+                break
 
         # sort dict by variance ascending
 
