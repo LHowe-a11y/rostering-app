@@ -153,6 +153,7 @@ Employee preference will be weighted based on the number of hours already assign
 
 class Roster:
     def __init__(self, dentists: DentistSchedule, employees: EmployeeList) -> None:
+        self.best_roster = None
         self.r = random.Random()
         self.last_seed = (
             0  # Stores the final calculated seed after a generation has been performed
@@ -226,10 +227,10 @@ class Roster:
                 }
                 self.schedule.append(new_shift)
 
-    def create_roster(self):
+    def create_roster(self) -> None:
         # necessary declarations/definitions of variables etc
         n = 100
-        min_calculated = 1  # should be  later decided by user
+        min_calculated = 1  # should be later decided by user
 
         # All potential rosters are calculated in this loop
         while True:
@@ -293,7 +294,4 @@ class Roster:
         )
 
         # pick first dict value (maybe introduce a minimum fairness/maximum variance value user can input)
-
-        # if satisfactory, calculate using seed again, then return
-
-        pass
+        self.best_roster = self.calculated_rosters[0]
