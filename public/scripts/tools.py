@@ -4,6 +4,7 @@ import html
 import bcrypt
 import random
 import statistics
+import time
 
 
 def sanitise(input: str) -> str:
@@ -176,6 +177,7 @@ class Roster:
             "saturday",
         )
         self.days_constructed = 0
+        self.failed_seed = False
         for day in self.days_of_week:
             self.days_constructed += 1
             if self.dentists.no_shifts(self.days_constructed):
@@ -229,6 +231,8 @@ class Roster:
 
     def create_roster(self) -> None:
         # necessary declarations/definitions of variables etc
+        start_time = time.time()
+        max_time = 10  # seconds
         n = 100
         min_calculated = 1  # should be later decided by user
 
@@ -245,9 +249,8 @@ class Roster:
                         shift, self.employee_hours, self.employee_days
                     )
                     if len(available) == 0:
-                        raise Exception(
-                            "I haven't programmed this bit yet"
-                        )  # TODO create new attempt
+                        self.failed_seed = True
+                        break
                     elif len(available) == 1:
                         assigned_employee = available[0]
                     else:
@@ -269,6 +272,10 @@ class Roster:
                     self.employee_hours[assigned_employee["name"]] += hours
                     self.employee_days[assigned_employee["name"]].append(shift["day"])
 
+                if self.failed_seed:
+                    self.failed_seed = False
+                    continue
+
                 # calculate variance
                 all_hours = []
                 for x in self.employee_hours:
@@ -283,10 +290,9 @@ class Roster:
             # check dict to see if any valid rosters have been found, if not try again, if yes continue
             if len(self.calculated_rosters) >= min_calculated:
                 break
-            # TODO
-            # if timeout:
-            #     error message
-            #     break/return whatever
+            if time.time() - start_time > max_time:
+                # TODO timeout error message
+                raise TimeoutError("Roster took too long to create.")
 
         # sort dict by variance ascending
         self.calculated_rosters = sorted(
@@ -295,3 +301,9 @@ class Roster:
 
         # pick first dict value (maybe introduce a minimum fairness/maximum variance value user can input)
         self.best_roster = self.calculated_rosters[0]
+        return
+
+    def fetch_roster(self):
+        self.r.seed(self.best_roster)
+
+        pass
