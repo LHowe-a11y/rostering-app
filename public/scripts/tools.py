@@ -163,7 +163,6 @@ class Roster:
         self.employees = employees
         self.employee_hours = self.employees.employee_hours_template
         self.employee_days = self.employees.employee_days_template
-        self.iterations = 0
         self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning employee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
         self.variances = {}
         self.schedule = []
@@ -242,6 +241,8 @@ class Roster:
             for i in range(1, n + 1):
                 seed = i + self.last_seed
                 self.r.seed(seed)
+                self.employee_hours = self.employees.employee_hours_template
+                self.employee_days = self.employees.employee_days_template
 
                 # calculate one permutation with a seed (maybe we grab the people with the lowest hours, if it's a tie, we pick randomly using seed, this would create more inital variation, yet still attempt to keep very fair)
                 for shift in self.schedule:
@@ -305,5 +306,28 @@ class Roster:
 
     def fetch_roster(self):
         self.r.seed(self.best_roster)
+        for shift in self.schedule:
+            available = self.employees.fetch_available_employees(
+                shift, self.employee_hours, self.employee_days
+            )
+            if len(available) == 1:
+                assigned_employee = available[0]
+            else:
+                sorted_available = sorted(
+                    available, key=lambda x: self.employee_hours[x["name"]]
+                )  # Sorts from current assigned hours low to high, still in list of employee dict form
+                lowest_hours = self.employee_hours[sorted_available[0]["name"]]
+                tied_lowest = []
+                for employee in sorted_available:
+                    if self.employee_hours[employee["name"]] == lowest_hours:
+                        tied_lowest.append(employee)
+                    else:
+                        break
+                choice = self.r.randint(0, len(tied_lowest) - 1)
+                assigned_employee = tied_lowest[choice]
 
+            # shift["assignee"] = assigned_employee
+            hours = shift["end"] - shift["start"]
+            self.employee_hours[assigned_employee["name"]] += hours
+            self.employee_days[assigned_employee["name"]].append(shift["day"])
         pass
