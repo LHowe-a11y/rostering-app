@@ -304,8 +304,10 @@ class Roster:
         self.best_roster = self.calculated_rosters[0]
         return
 
-    def fetch_roster(self):
+    def fetch_roster(self) -> list:
         self.r.seed(self.best_roster)
+        self.employee_hours = self.employees.employee_hours_template
+        self.employee_days = self.employees.employee_days_template
         for shift in self.schedule:
             available = self.employees.fetch_available_employees(
                 shift, self.employee_hours, self.employee_days
@@ -326,8 +328,8 @@ class Roster:
                 choice = self.r.randint(0, len(tied_lowest) - 1)
                 assigned_employee = tied_lowest[choice]
 
-            # shift["assignee"] = assigned_employee
+            shift["assignee"] = assigned_employee
             hours = shift["end"] - shift["start"]
             self.employee_hours[assigned_employee["name"]] += hours
             self.employee_days[assigned_employee["name"]].append(shift["day"])
-        pass
+        return self.schedule
