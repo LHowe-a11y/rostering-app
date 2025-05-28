@@ -153,14 +153,14 @@ Employee preference will be weighted based on the number of hours already assign
 
 
 class Roster:
-    def __init__(self, dentists: DentistSchedule, employees: EmployeeList) -> None:
+    def __init__(self, dentists: list, employees: list) -> None:
         self.best_roster = None
         self.r = random.Random()
         self.last_seed = (
             0  # Stores the final calculated seed after a generation has been performed
         )
-        self.dentists = dentists
-        self.employees = employees
+        self.dentists = DentistSchedule(dentists)
+        self.employees = EmployeeList(employees)
         self.employee_hours = self.employees.employee_hours_template
         self.employee_days = self.employees.employee_days_template
         self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning employee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
