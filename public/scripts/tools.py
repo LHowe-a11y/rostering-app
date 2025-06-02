@@ -337,10 +337,37 @@ class Roster:
     def display_roster(self, roster) -> list[list[str]]:
         table = [
             ["Monday"],
-            ["Tuesday", "oofbadoof"],
+            [""],
+            ["Tuesday"],
+            [""],
             ["Wednesday"],
+            [""],
             ["Thursday"],
-            ["Friday", "big ol' testareedoo", "Garfield new comic strip"],
+            [""],
+            ["Friday"],
+            [""],
             ["Saturday"],
+            [""],
         ]
+        for shift in roster:
+            if shift["day"] == "monday":
+                i = 0
+            elif shift["day"] == "tuesday":
+                i = 2
+            elif shift["day"] == "wednesday":
+                i = 4
+            elif shift["day"] == "thursday":
+                i = 6
+            elif shift["day"] == "friday":
+                i = 8
+            elif shift["day"] == "saturday":
+                i = 10
+            else:
+                raise ValueError(
+                    "Roster provided to display roster function has invalid content (wrong day)",
+                    shift,
+                )
+            shift_time = str(shift["start"]) + " - " + str(shift["end"])
+            table[i].append(shift_time)
+            table[i + 1].append(shift["assignee"]["name"])
         return table
