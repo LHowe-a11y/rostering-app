@@ -26,12 +26,12 @@ def check_hash(input: str, hash: bytes) -> bool:
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
         # raw_shifts = shifts
-        self.monday: list
-        self.tuesday: list
-        self.wednesday: list
-        self.thursday: list
-        self.friday: list
-        self.saturday: list
+        self.monday = []
+        self.tuesday = []
+        self.wednesday = []
+        self.thursday = []
+        self.friday = []
+        self.saturday = []
 
         """This section sorts and formats each shift for easier processing"""
 
@@ -333,3 +333,14 @@ class Roster:
             self.employee_hours[assigned_employee["name"]] += hours
             self.employee_days[assigned_employee["name"]].append(shift["day"])
         return self.schedule
+
+    def display_roster(self, roster) -> list[list[str]]:
+        table = [
+            ["Monday"],
+            ["Tuesday", "oofbadoof"],
+            ["Wednesday"],
+            ["Thursday"],
+            ["Friday", "big ol' testareedoo", "Garfield new comic strip"],
+            ["Saturday"],
+        ]
+        return table

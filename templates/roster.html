@@ -8,7 +8,43 @@
 </head>
 
 <body>
-
+    <table>
+        <tr>
+            <th>Day</th>
+            <th>Shifts</th>
+        </tr>
+        {% for row in table %}
+        <tr>
+            {% for item in row %}
+            <td>{{ item }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+        <!-- <tr>
+            <td>Monday</td>
+            <td>shift1</td>
+            <td>shift2</td>
+            <td>shift3</td>
+        </tr>
+        <tr>   
+            <td></td>
+            <td>employee1</td>
+            <td>employee2</td>
+            <td>employee3</td>
+        </tr>
+        <tr>
+            <td>Tuesday</td>
+            <td>shift1</td>
+            <td>shift2</td>
+            <td>shift3</td>
+            <td>shift4</td>
+            <td>shift5</td>
+        </tr>
+        <tr>
+            <td>Wednesday</td>
+            <td>shift1</td>
+        </tr> -->
+    </table>
 </body>
 
 </html>
