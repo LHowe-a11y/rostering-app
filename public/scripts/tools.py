@@ -123,6 +123,14 @@ class EmployeeList:
         for person in self.employees:
             self.employee_days_template[person["name"]] = []
 
+    def reset_templates(self) -> None:
+        for person in self.employees:
+            self.employee_hours_template[person["name"]] = 0
+        self.employee_days_template = {}
+        for person in self.employees:
+            self.employee_days_template[person["name"]] = []
+        return
+
     # A shift should be day: "monday", "tuesday",...  start: 0.0   end: 23.75   role: receptionist, assistant_1, runner...
     def fetch_available_employees(
         self, shift: dict, employee_hours: dict, employee_days: dict
@@ -161,6 +169,7 @@ class Roster:
         )
         self.dentists = DentistSchedule(dentists)
         self.employees = EmployeeList(employees)
+        self.employees.reset_templates()
         self.employee_hours = self.employees.employee_hours_template
         self.employee_days = self.employees.employee_days_template
         self.calculated_rosters = []  # The plan is to calculate the n best predicted iterations (meaning employee rules), then order by most preferable, and then iterate through until one is found which fits the rules.
@@ -241,6 +250,7 @@ class Roster:
             for i in range(1, n + 1):
                 seed = i + self.last_seed
                 self.r.seed(seed)
+                self.employees.reset_templates()
                 self.employee_hours = self.employees.employee_hours_template
                 self.employee_days = self.employees.employee_days_template
 
@@ -306,6 +316,7 @@ class Roster:
 
     def fetch_roster(self) -> list:
         self.r.seed(self.best_roster)
+        self.employees.reset_templates()
         self.employee_hours = self.employees.employee_hours_template
         self.employee_days = self.employees.employee_days_template
         for shift in self.schedule:
@@ -314,6 +325,19 @@ class Roster:
             )
             if len(available) == 1:
                 assigned_employee = available[0]
+            elif len(available) == 0:
+                raise IndexError(
+                    "For some reason, the seed McFailed to get any available employees, even though it did earlier",
+                    self.best_roster,
+                    self.calculated_rosters,
+                    self.variances,
+                    shift,
+                    self.employee_hours,
+                    self.employees.employee_hours_template,
+                    self.employee_days,
+                    self.employees.employee_days_template,
+                    self.schedule,
+                )
             else:
                 sorted_available = sorted(
                     available, key=lambda x: self.employee_hours[x["name"]]
@@ -334,7 +358,7 @@ class Roster:
             self.employee_days[assigned_employee["name"]].append(shift["day"])
         return self.schedule
 
-    def display_roster(self, roster) -> list[list[str]]:
+    def display_roster(self, roster: list[dict]) -> list[list[str]]:
         table = [
             ["Monday"],
             [""],

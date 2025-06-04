@@ -7,6 +7,86 @@ app = Flask(__name__)
 
 manager = AccountsManager()
 
+example_dentists = [
+    {
+        "day": "monday",
+        "start": 13.75,
+        "end": 19.0,
+        "id": 2,
+    },
+    {
+        "day": "wednesday",
+        "start": 13.75,
+        "end": 19.0,
+        "id": 2,
+    },
+    {
+        "day": "wednesday",
+        "start": 8.5,
+        "end": 14.25,
+        "id": 1,
+    },
+]
+
+example_employees = [
+    {
+        "name": "Scomo",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+    {
+        "name": "Albakneezee",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+    {
+        "name": "Boris Johnson",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+    {
+        "name": "Adil",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+]
+
 
 @app.route("/")
 def home():
@@ -68,8 +148,10 @@ def tool():
     #     return render_template("roster.html", table=table)
     # if request.method == "POST":
     # TODO get the actual inputs from the web page
-    blank_roster = Roster([], [])
-    test_table = blank_roster.display_roster([])
+    blank_roster = Roster(example_dentists, example_employees)
+    # test_table = blank_roster.display_roster([])
+    blank_roster.create_roster()
+    test_table = blank_roster.display_roster(blank_roster.fetch_roster())
     return render_template("roster.html", table=test_table)
 
 
