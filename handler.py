@@ -2,7 +2,7 @@ import sqlite3 as sql
 from public.scripts.tools import hash, check_hash
 
 
-class AccountsManager:
+class DatabaseManager:
     def __init__(self) -> None:
         pass
 
@@ -11,20 +11,18 @@ class AccountsManager:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
         cursor.execute(
-            "INSERT INTO accounts (username,password) VALUES (?,?)", # Maybe will need quotation marks here, could make f string
+            "INSERT INTO accounts (username,password) VALUES (?,?)",  # Maybe will need quotation marks here, could make f string
             (username, hashed_password),
         )
         db.commit()
         db.close()
         return
-    
+
     def verify_login(self, username: str, password: str) -> bool:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
         # raise Exception(db, cursor)
-        res = cursor.execute(
-            f"SELECT * FROM accounts WHERE username == '{username}';"
-        )
+        res = cursor.execute(f"SELECT * FROM accounts WHERE username == '{username}';")
         user_details = res.fetchall()
         if len(user_details) > 1:
             abc = user_details
@@ -38,40 +36,35 @@ class AccountsManager:
         )
         fetch = res.fetchone()
         password_hash = fetch[0]
-        print(password_hash) # debug
+        print(password_hash)  # debug
         db.close()
         return check_hash(password, password_hash)
-    
+
     def fetch_username(self, id: int) -> str:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
-        res = cursor.execute(
-            f"SELECT username FROM accounts WHERE id = {id}"
-        )
+        res = cursor.execute(f"SELECT username FROM accounts WHERE id = {id}")
         username = res.fetchone()[0]
         db.close()
         return username
-    
+
     def user_id(self, username: str, password: str) -> int:
         if self.verify_login(username, password):
             db = sql.connect(".database/accounts.db")
             cursor = db.cursor()
             res = cursor.execute(
-            f"SELECT id FROM accounts WHERE username = '{username}'"
+                f"SELECT id FROM accounts WHERE username = '{username}'"
             )
             user_id = res.fetchone()[0]
             db.close()
             return user_id
         else:
             raise ValueError("User wasn't valid to fetch id")
-        
-    
+
     def username_is_unique(self, username: str) -> bool:
         db = sql.connect(".database/accounts.db")
         cursor = db.cursor()
-        res = cursor.execute(
-            f"SELECT * FROM accounts WHERE username = '{username}'"
-        )
+        res = cursor.execute(f"SELECT * FROM accounts WHERE username = '{username}'")
         if res.fetchone() is None:
             db.close()
             return True
@@ -79,3 +72,19 @@ class AccountsManager:
             db.close()
             return False
 
+    def fetch_in_progress_dentists(self, id: int) -> bytes:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        res = cursor.execute(f"SELECT dentists FROM in_progress WHERE user_id = {id}")
+        dentists = res.fetchone()
+        db.close()
+        return dentists
+
+    def update_in_progress_dentists(self, id: int, dentists: bytes) -> None:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        cursor.execute(
+            f"UPDATE in_progress SET dentists = REPLACE(dentists, dentists, {dentists}) WHERE user_id = {id}"
+        )
+        db.commit()
+        db.close()

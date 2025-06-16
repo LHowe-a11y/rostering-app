@@ -1,11 +1,12 @@
 from flask import Flask, request, session, redirect, flash, render_template
 import os
 from public.scripts.tools import sanitise, Roster
-from handler import AccountsManager
+from handler import DatabaseManager
+import json
 
 app = Flask(__name__)
 
-manager = AccountsManager()
+manager = DatabaseManager()
 
 example_dentists = [
     {
@@ -87,6 +88,9 @@ example_employees = [
     },
 ]
 
+example_dentists_json = json.dumps(example_dentists)
+new_dentists = json.loads(example_dentists_json)
+
 
 @app.route("/")
 def home():
@@ -148,6 +152,20 @@ def tool():
     #     return render_template("roster.html", table=table)
     # if request.method == "POST":
     # TODO get the actual inputs from the web page
+    if request.method == "POST":
+        if request.form["dentist_submit"] == "Add dentist":
+            dental_shifts = json.loads(
+                manager.fetch_in_progress_dentists(session.get("id"))  # type: ignore
+            )
+            new_shift = {
+                "day": request.form["day"],
+                "start": request.form["start"],
+                "end": request.form["end"],
+                "id": request.form["id"],
+            }
+            dental_shifts.append(new_shift)
+            json_dentists = json.dumps(dental_shifts)
+
     blank_roster = Roster(example_dentists, example_employees)
     # test_table = blank_roster.display_roster([])
     blank_roster.create_roster()
