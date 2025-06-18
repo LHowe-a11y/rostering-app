@@ -1,5 +1,6 @@
 import sqlite3 as sql
 from public.scripts.tools import hash, check_hash
+import json
 
 
 class DatabaseManager:
@@ -72,19 +73,30 @@ class DatabaseManager:
             db.close()
             return False
 
-    def fetch_in_progress_dentists(self, id: int) -> bytes:
+    def fetch_in_progress_dentists(self, id: int) -> str:
         db = sql.connect(".database/rosters.db")
         cursor = db.cursor()
         res = cursor.execute(f"SELECT dentists FROM in_progress WHERE user_id = {id}")
-        dentists = res.fetchone()
+        dentists = res.fetchone()[0]
         db.close()
         return dentists
 
-    def update_in_progress_dentists(self, id: int, dentists: bytes) -> None:
+    def update_in_progress_dentists(self, id: int, dentists: str) -> None:
         db = sql.connect(".database/rosters.db")
         cursor = db.cursor()
         cursor.execute(
-            f"UPDATE in_progress SET dentists = REPLACE(dentists, dentists, {dentists}) WHERE user_id = {id}"
+            f"UPDATE in_progress SET dentists = REPLACE(dentists, dentists, '{dentists}') WHERE user_id = {id}"
+        )
+        db.commit()
+        db.close()
+
+    def new_in_progress(self, id: int) -> None:
+        list = json.dumps([])
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO in_progress (user_id,dentists,employees) VALUES (?,?,?)",  # Maybe will need quotation marks here, could make f string
+            (id, list, list),
         )
         db.commit()
         db.close()

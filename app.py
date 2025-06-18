@@ -145,8 +145,8 @@ def sign_up():
 
 @app.route("/tool", methods=["POST", "GET"])  # type: ignore
 def tool():
-    # if not session.get("logged_in"):
-    #     return redirect("/login")
+    if not session.get("logged_in"):
+        return redirect("/login")
     # if request.method == "GET":
     #     table = [["No roster created/chosen."]]
     #     return render_template("roster.html", table=table)
@@ -154,9 +154,11 @@ def tool():
     # TODO get the actual inputs from the web page
     if request.method == "POST":
         if request.form["dentist_submit"] == "Add dentist":
-            dental_shifts = json.loads(
-                manager.fetch_in_progress_dentists(session.get("id"))  # type: ignore
-            )
+            json_old_dentists = manager.fetch_in_progress_dentists(session.get("id"))  # type: ignore
+            if json_old_dentists is None:
+                dental_shifts = []
+            else:
+                dental_shifts = json.loads(json_old_dentists)
             new_shift = {
                 "day": request.form["day"],
                 "start": request.form["start"],
@@ -165,7 +167,10 @@ def tool():
             }
             dental_shifts.append(new_shift)
             json_dentists = json.dumps(dental_shifts)
-
+            user_id = session.get("id")
+            if json_old_dentists is None:
+                manager.new_in_progress(user_id)  # type: ignore
+            manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
     blank_roster = Roster(example_dentists, example_employees)
     # test_table = blank_roster.display_roster([])
     blank_roster.create_roster()
