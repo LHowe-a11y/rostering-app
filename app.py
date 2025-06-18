@@ -154,7 +154,8 @@ def tool():
     # TODO get the actual inputs from the web page
     if request.method == "POST":
         if request.form["dentist_submit"] == "Add dentist":
-            json_old_dentists = manager.fetch_in_progress_dentists(session.get("id"))  # type: ignore
+            user_id = session.get("id")
+            json_old_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
             if json_old_dentists is None:
                 dental_shifts = []
             else:
@@ -167,10 +168,19 @@ def tool():
             }
             dental_shifts.append(new_shift)
             json_dentists = json.dumps(dental_shifts)
-            user_id = session.get("id")
             if json_old_dentists is None:
                 manager.new_in_progress(user_id)  # type: ignore
             manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
+        elif request.form["dentist_submit"] == "Delete last dentist":
+            user_id = session.get("id")
+            json_old_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
+            if json_old_dentists is not None:
+                dental_shifts = json.loads(json_old_dentists)
+                if dental_shifts != []:
+                    dental_shifts.pop()
+                    json_dentists = json.dumps(dental_shifts)
+                    manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
+
     blank_roster = Roster(example_dentists, example_employees)
     # test_table = blank_roster.display_roster([])
     blank_roster.create_roster()

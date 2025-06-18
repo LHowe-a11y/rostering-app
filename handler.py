@@ -73,13 +73,16 @@ class DatabaseManager:
             db.close()
             return False
 
-    def fetch_in_progress_dentists(self, id: int) -> str:
+    def fetch_in_progress_dentists(self, id: int) -> str | None:
         db = sql.connect(".database/rosters.db")
         cursor = db.cursor()
         res = cursor.execute(f"SELECT dentists FROM in_progress WHERE user_id = {id}")
-        dentists = res.fetchone()[0]
+        dentists = res.fetchone()
         db.close()
-        return dentists
+        if dentists is not None:
+            return dentists[0]
+        else:
+            return None
 
     def update_in_progress_dentists(self, id: int, dentists: str) -> None:
         db = sql.connect(".database/rosters.db")
