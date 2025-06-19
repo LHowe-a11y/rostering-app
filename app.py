@@ -153,7 +153,7 @@ def tool():
     # if request.method == "POST":
     # TODO get the actual inputs from the web page
     if request.method == "POST":
-        if request.form["dentist_submit"] == "Add dentist":
+        if request.form["submit"] == "Add dentist":
             user_id = session.get("id")
             json_old_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
             if json_old_dentists is None:
@@ -171,7 +171,7 @@ def tool():
             if json_old_dentists is None:
                 manager.new_in_progress(user_id)  # type: ignore
             manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
-        elif request.form["dentist_submit"] == "Delete last dentist":
+        elif request.form["submit"] == "Delete last dentist":
             user_id = session.get("id")
             json_old_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
             if json_old_dentists is not None:
