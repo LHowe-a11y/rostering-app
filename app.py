@@ -1,11 +1,96 @@
 from flask import Flask, request, session, redirect, flash, render_template
 import os
-from public.scripts.tools import sanitise
-from handler import AccountsManager
+from public.scripts.tools import sanitise, Roster
+from handler import DatabaseManager
+import json
 
 app = Flask(__name__)
 
-manager = AccountsManager()
+manager = DatabaseManager()
+
+example_dentists = [
+    {
+        "day": "monday",
+        "start": 13.75,
+        "end": 19.0,
+        "id": 2,
+    },
+    {
+        "day": "wednesday",
+        "start": 13.75,
+        "end": 19.0,
+        "id": 2,
+    },
+    {
+        "day": "wednesday",
+        "start": 8.5,
+        "end": 14.25,
+        "id": 1,
+    },
+]
+
+example_employees = [
+    {
+        "name": "Scomo",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+    {
+        "name": "Albakneezee",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+    {
+        "name": "Boris Johnson",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+    {
+        "name": "Adil",
+        "max_hours": 999,
+        "max_days": 16,
+        "available_days": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+        ],
+        "available_roles": ["receptionist", "runner", "assistant_1", "assistant_2"],
+    },
+]
+
+example_dentists_json = json.dumps(example_dentists)
+new_dentists = json.loads(example_dentists_json)
+
 
 @app.route("/")
 def home():
@@ -15,8 +100,7 @@ def home():
             session["logged_in"] = False
             flash("You were logged in to an invalid account.", "error")
             return redirect("/login")
-        name = manager.fetch_username(id)
-        return "Logged in, %s" % name
+        return redirect("/tool")
     else:
         return redirect("/login")
 
@@ -40,7 +124,7 @@ def login():
             return redirect("/")
 
 
-@app.route("/signup", methods=["POST", "GET"]) # type: ignore
+@app.route("/signup", methods=["POST", "GET"])  # type: ignore
 def sign_up():
     if request.method == "GET":
         return render_template("signup.html")
@@ -48,15 +132,60 @@ def sign_up():
         username = sanitise(request.form["username"])
         password = sanitise(request.form["password"])
         password_two = sanitise(request.form["confirm_password"])
-        if not manager.username_is_unique(username): 
+        if not manager.username_is_unique(username):
             flash("Username is taken.", "error")
             return render_template("signup.html")
         if not password == password_two:
             flash("Passwords do not match.", "error")
             return render_template("signup.html")
-        manager.create_account(username, password) 
+        manager.create_account(username, password)
         flash("Account successfully created, feel free to log in.", "message")
         return redirect("/login")
+
+
+@app.route("/tool", methods=["POST", "GET"])  # type: ignore
+def tool():
+    if not session.get("logged_in"):
+        return redirect("/login")
+    # if request.method == "GET":
+    #     table = [["No roster created/chosen."]]
+    #     return render_template("roster.html", table=table)
+    # if request.method == "POST":
+    # TODO get the actual inputs from the web page
+    if request.method == "POST":
+        if request.form["submit"] == "Add dentist":
+            user_id = session.get("id")
+            json_old_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
+            if json_old_dentists is None:
+                dental_shifts = []
+            else:
+                dental_shifts = json.loads(json_old_dentists)
+            new_shift = {
+                "day": request.form["day"],
+                "start": request.form["start"],
+                "end": request.form["end"],
+                "id": request.form["id"],
+            }
+            dental_shifts.append(new_shift)
+            json_dentists = json.dumps(dental_shifts)
+            if json_old_dentists is None:
+                manager.new_in_progress(user_id)  # type: ignore
+            manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
+        elif request.form["submit"] == "Delete last dentist":
+            user_id = session.get("id")
+            json_old_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
+            if json_old_dentists is not None:
+                dental_shifts = json.loads(json_old_dentists)
+                if dental_shifts != []:
+                    dental_shifts.pop()
+                    json_dentists = json.dumps(dental_shifts)
+                    manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
+
+    blank_roster = Roster(example_dentists, example_employees)
+    # test_table = blank_roster.display_roster([])
+    blank_roster.create_roster()
+    test_table = blank_roster.display_roster(blank_roster.fetch_roster())
+    return render_template("roster.html", table=test_table)
 
 
 if __name__ == "__main__":
