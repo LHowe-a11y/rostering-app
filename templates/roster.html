@@ -8,7 +8,7 @@
 </head>
 
 <body>
-    <section id="Roster table">
+    <section id="roster_table">
         <table>
             <tr>
                 <th>Day</th>
@@ -26,7 +26,7 @@
             {% endfor %}
         </table>
     </section>
-    <section id="Input_for_roster_generation" style="display: flex; flex-direction: column;">
+    <section id="input_for_roster_generation" style="display: flex; flex-direction: column;">
         <div>
             <h3>Add dentist shift</h3>
             <form action="/tool" method="post">
@@ -54,8 +54,8 @@
                 <label for="max_days_input">Employee maximum weekly days:</label><br>
                 <input type="number" id="max_days_input" name="max_days"><br><br><br>
                 <!-- Available days input here, maybe a selection checklist would work -->
-                <label for="Available_employee_days_checklist">Employee available days:</label><br><br>
-                <section id="Available_employee_days_checklist">
+                <label for="available_employee_days_checklist">Employee available days:</label><br><br>
+                <section id="available_employee_days_checklist">
                     <label for="monday_checkbox">Monday</label><br>
                     <input type="checkbox" id="monday_checkbox" name="available_monday"><br><br>
                     <label for="tuesday_checkbox">Tuesday</label><br>
