@@ -239,6 +239,68 @@ def tool():
                     dental_shifts.pop()
                     json_dentists = json.dumps(dental_shifts)
                     manager.update_in_progress_dentists(user_id, json_dentists)  # type: ignore
+        elif request.form["submit"] == "Add employee":
+            # Fetch data
+            user_id = session.get("id")
+            json_old_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+            # Prevent error from non-existent database entry
+            if json_old_employees is None:
+                employee_list = []
+            else:
+                employee_list = json.loads(json_old_employees)
+            # Format data from inputs into intended format and sanitise and validate it
+            name = sanitise(request.form["name"])
+            available_days = []
+            if request.form["available_monday"]:
+                available_days.append("monday")
+            if request.form["available_tuesday"]:
+                available_days.append("tuesday")
+            if request.form["available_wednesday"]:
+                available_days.append("wednesday")
+            if request.form["available_thursday"]:
+                available_days.append("thursday")
+            if request.form["available_friday"]:
+                available_days.append("friday")
+            if request.form["available_saturday"]:
+                available_days.append("saturday")
+            available_roles = []
+            if request.form["available_runner"]:
+                available_roles.append("runner")
+            if request.form["available_receptionist"]:
+                available_roles.append("receptionist")
+            assistant_ids = sanitise(request.form["available_assistants"]).split(",")
+            for id in assistant_ids:
+                try:
+                    id_int = int(id)
+                    if id_int <= 0:
+                        raise ValueError()
+                except ValueError:
+                    flash(
+                        "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
+                        "error",
+                    )
+                    return redirect("/roster")
+                except TypeError:
+                    flash(
+                        "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
+                        "error",
+                    )
+                    return redirect("/roster")
+                available_roles.append(f"assistant_{id}")
+            new_employee = {
+                "name": name,
+                "max_hours": request.form["max_hours"],
+                "max_days": request.form["max_days"],
+                "available_days": available_days,
+                "available_roles": available_roles,
+            }
+            employee_list.append(new_employee)
+            json_employees = json.dumps(employee_list)
+            # Create new database entry to update if none exists
+            if json_old_employees is None:
+                manager.new_in_progress(user_id)  # type: ignore
+            # Update in progress database
+            manager.update_in_progress_dentists(user_id, json_employees)  # type: ignore
 
     # Render template using test data
     blank_roster = Roster(example_dentists, example_employees)
