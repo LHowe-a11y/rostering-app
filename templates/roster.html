@@ -78,6 +78,8 @@
                 <!-- Available roles input here, unsure how to do assistant for each dentist -->
                 <label for="available_employee_roles">Available employee roles:</label><br><br>
                 <section id="available_employee_roles">
+                    <input type="hidden" name="available_receptionist" value=False>
+                    <input type="hidden" name="available_runner" value=False>
                     <label for="receptionist_checkbox">Receptionist</label><br>
                     <input type="checkbox" id="receptionist_checkbox" name="available_receptionist" value=True><br><br>
                     <label for="runner_checkbox">Runner</label><br>
