@@ -38,7 +38,7 @@
                 <input type="text" id="end_time_input" name="end"><br><br>
                 <label for="id_input">Dentist's ID (number):</label><br>
                 <input type="number" id="id_input" name="id" min="1"><br><br>
-                <input type="submit" value="Add dentist" name="submit">
+                <input type="submit" value="Add dentist" name="submit"><br><br>
             </form>
             <form action="/tool" method="post">
                 <input type="submit" value="Delete last dentist" name="submit">
@@ -57,22 +57,35 @@
                 <label for="available_employee_days_checklist">Employee available days:</label><br><br>
                 <section id="available_employee_days_checklist">
                     <label for="monday_checkbox">Monday</label><br>
-                    <input type="checkbox" id="monday_checkbox" name="available_monday"><br><br>
+                    <input type="checkbox" id="monday_checkbox" name="available_monday" value="True"><br><br>
                     <label for="tuesday_checkbox">Tuesday</label><br>
-                    <input type="checkbox" id="tuesday_checkbox" name="available_tuesday"><br><br>
+                    <input type="checkbox" id="tuesday_checkbox" name="available_tuesday" value="True"><br><br>
                     <label for="wednesday_checkbox">Wednesday</label><br>
-                    <input type="checkbox" id="wednesday_checkbox" name="available_wednesday"><br><br>
+                    <input type="checkbox" id="wednesday_checkbox" name="available_wednesday" value="True"><br><br>
                     <label for="thursday_checkbox">Thursday</label><br>
-                    <input type="checkbox" id="thursday_checkbox" name="available_thursday"><br><br>
+                    <input type="checkbox" id="thursday_checkbox" name="available_thursday" value="True"><br><br>
                     <label for="friday_checkbox">Friday</label><br>
-                    <input type="checkbox" id="friday_checkbox" name="available_friday"><br><br>
+                    <input type="checkbox" id="friday_checkbox" name="available_friday" value="True"><br><br>
                     <label for="saturday_checkbox">Saturday</label><br>
-                    <input type="checkbox" id="saturday_checkbox" name="available_saturday"><br><br><br>
+                    <input type="checkbox" id="saturday_checkbox" name="available_saturday" value="True"><br><br><br>
                 </section>
                 <!-- Available roles input here, unsure how to do assistant for each dentist -->
-                <input type="text">
-                <input type="submit" value="Add employee" name="submit">
+                <label for="available_employee_roles">Available employee roles:</label><br><br>
+                <section id="available_employee_roles">
+                    <label for="receptionist_checkbox">Receptionist</label><br>
+                    <input type="checkbox" id="receptionist_checkbox" name="available_receptionist"
+                        value="True"><br><br>
+                    <label for="runner_checkbox">Runner</label><br>
+                    <input type="checkbox" id="runner_checkbox" name="available_runner" value="True"><br><br>
+                    <label for="assistant_input">Assistant (enter IDs of dentists which employee may assist)</label><br>
+                    <input type="text" id="assistant_input" placeholder="1,2,3... <-- Enter IDs of dentists"><br><br>
+                </section>
+                <input type="submit" value="Add employee" name="submit"><br><br>
+            </form>
+            <form action="/tool" method="post">
+                <input type="submit" value="Delete last employee" name="submit">
             </form>
         </div>
     </section>
+
 </html>
