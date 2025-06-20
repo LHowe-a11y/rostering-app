@@ -301,6 +301,18 @@ def tool():
                 manager.new_in_progress(user_id)  # type: ignore
             # Update in progress database
             manager.update_in_progress_dentists(user_id, json_employees)  # type: ignore
+        elif request.form["submit"] == "Delete last employee":
+            # fetch data
+            user_id = session.get("id")
+            json_old_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+            # Verify there is something to delete
+            if json_old_employees is not None:
+                employee_list = json.loads(json_old_employees)
+                if employee_list != []:
+                    # delete
+                    employee_list.pop()
+                    json_employees = json.dumps(employee_list)
+                    manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
 
     # Render template using test data
     blank_roster = Roster(example_dentists, example_employees)
