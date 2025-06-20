@@ -56,6 +56,12 @@
                 <!-- Available days input here, maybe a selection checklist would work -->
                 <label for="available_employee_days_checklist">Employee available days:</label><br><br>
                 <section id="available_employee_days_checklist">
+                    <input type="hidden" name="available_monday" value=False>
+                    <input type="hidden" name="available_tuesday" value=False>
+                    <input type="hidden" name="available_wednesday" value=False>
+                    <input type="hidden" name="available_thursday" value=False>
+                    <input type="hidden" name="available_friday" value=False>
+                    <input type="hidden" name="available_saturday" value=False>
                     <label for="monday_checkbox">Monday</label><br>
                     <input type="checkbox" id="monday_checkbox" name="available_monday" value=True><br><br>
                     <label for="tuesday_checkbox">Tuesday</label><br>
