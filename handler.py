@@ -103,3 +103,23 @@ class DatabaseManager:
         )
         db.commit()
         db.close()
+
+    def fetch_in_progress_employees(self, id: int) -> str | None:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        res = cursor.execute(f"SELECT employees FROM in_progress WHERE user_id = {id}")
+        employees = res.fetchone()
+        db.close()
+        if employees is not None:
+            return employees[0]
+        else:
+            return None
+
+    def update_in_progress_employees(self, id: int, employees: str) -> None:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        cursor.execute(
+            f"UPDATE in_progress SET employees = REPLACE(employees, employees, '{employees}') WHERE user_id = {id}"
+        )
+        db.commit()
+        db.close()
