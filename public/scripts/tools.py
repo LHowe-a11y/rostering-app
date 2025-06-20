@@ -41,7 +41,6 @@ class DentistSchedule:
         # self.shifts = list(map(lambda x: x.split(":"), raw_shifts))
 
         # Shifts are in the form Day:Start:End:Dentist e.g. 1:0830:1300:2 would mean Monday, 8:30 am to 1:00 pm, Dentist 2.
-        # TODO change shifts into form {"day": "monday", "start": 13.75, "end": 29.25, "id": 2}
 
         for shift in shifts:  # For each shift in the total list of shifts
             # Turn each part of the shift into an integer to allow mathematics
