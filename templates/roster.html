@@ -33,24 +33,7 @@
             {% endfor %}
         </table>
     </section>
-    <section id="input_for_roster_generation" style="display: flex; flex-direction: column;">
-        <div>
-            <h3>Add dentist shift</h3>
-            <form action="/tool" method="post">
-                <label for="day_input">Day</label><br>
-                <input type="text" id="day_input" name="day"><br><br>
-                <label for="start_time_input">Start time:</label><br>
-                <input type="text" id="start_time_input" name="start"><br><br>
-                <label for="end_time_input">End time:</label><br>
-                <input type="text" id="end_time_input" name="end"><br><br>
-                <label for="id_input">Dentist's ID (number):</label><br>
-                <input type="number" id="id_input" name="id" min="1"><br><br>
-                <input type="submit" value="Add dentist" name="submit"><br><br>
-            </form>
-            <form action="/tool" method="post">
-                <input type="submit" value="Delete last dentist" name="submit">
-            </form>
-        </div>
+    <section id="input_for_roster_generation" style="display: flex; flex-direction: row;">
         <div>
             <h3>Add employees</h3>
             <form action="/tool" method="post">
@@ -90,6 +73,23 @@
             </form>
             <form action="/tool" method="post">
                 <input type="submit" value="Delete last employee" name="submit">
+            </form>
+        </div>
+        <div>
+            <h3>Add dentist shift</h3>
+            <form action="/tool" method="post">
+                <label for="day_input">Day</label><br>
+                <input type="text" id="day_input" name="day"><br><br>
+                <label for="start_time_input">Start time:</label><br>
+                <input type="text" id="start_time_input" name="start"><br><br>
+                <label for="end_time_input">End time:</label><br>
+                <input type="text" id="end_time_input" name="end"><br><br>
+                <label for="id_input">Dentist's ID (number):</label><br>
+                <input type="number" id="id_input" name="id" min="1"><br><br>
+                <input type="submit" value="Add dentist" name="submit"><br><br>
+            </form>
+            <form action="/tool" method="post">
+                <input type="submit" value="Delete last dentist" name="submit">
             </form>
         </div>
     </section>
