@@ -159,11 +159,6 @@ def sign_up():
 def tool():
     if not session.get("logged_in"):
         return redirect("/login")
-    # if request.method == "GET":
-    #     table = [["No roster created/chosen."]]
-    #     return render_template("roster.html", table=table)
-    # if request.method == "POST":
-    # TODO get the actual inputs from the web page
     if request.method == "POST":
         # If statement determines user action/request
         if request.form["submit"] == "Add dentist":
@@ -319,12 +314,43 @@ def tool():
                     json_employees = json.dumps(employee_list)
                     manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
 
-    # Render template using test data
-    blank_roster = Roster(example_dentists, example_employees)
-    # test_table = blank_roster.display_roster([])
-    blank_roster.create_roster()
-    test_table = blank_roster.display_roster(blank_roster.fetch_roster())
-    return render_template("roster.html", table=test_table)
+    # # Render template using test data
+    # blank_roster = Roster(example_dentists, example_employees)
+    # # test_table = blank_roster.display_roster([])
+    # blank_roster.create_roster()
+    # test_table = blank_roster.display_roster(blank_roster.fetch_roster())
+    # return render_template("roster.html", table=test_table)
+
+    # Render the in progress roster creation (or a blank if nothing is in progress)
+    user_id = session.get("id")
+    json_dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
+    json_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+    # Check there is an in progress thing
+    if json_dentists is not None and json_employees is not None:
+        dentists = json.loads(json_dentists)
+        employees = json.loads(json_employees)
+        if dentists != [] and employees != [] and len(employees) > 1:
+            display_roster = Roster(dentists, employees)
+            display_roster.create_roster()
+            if display_roster.failed:
+                flash(
+                    "The program timed out, and could not find any possible roster configurations. You might be able to change some settings to get a different outcome, but consider re-arranging your schedule.",
+                    "error",
+                )
+                table = [["No roster to display."]]
+                return render_template("roster.html", table=table)
+            elif display_roster.timed_out:
+                flash(
+                    "The program found possible solutions, but less than the preferred minimum. This result may not be ideal.",
+                    "warning",
+                )
+            table = display_roster.display_roster(display_roster.fetch_roster())
+            return render_template("roster.html", table=table)
+    flash(
+        "You need at least one dentist shift and two employees to generate a roster, which you do not currently have."
+    )
+    table = [["No roster to display."]]
+    return render_template("roster.html", table=table)
 
 
 if __name__ == "__main__":
