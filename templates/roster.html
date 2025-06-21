@@ -8,7 +8,14 @@
 </head>
 
 <body>
-    <section id="Roster table">
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    {% for message in messages %}
+    {{ message }}
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <section id="roster_table">
         <table>
             <tr>
                 <th>Day</th>
@@ -26,24 +33,7 @@
             {% endfor %}
         </table>
     </section>
-    <section id="Input_for_roster_generation" style="display: flex; flex-direction: column;">
-        <div>
-            <h3>Add dentist shift</h3>
-            <form action="/tool" method="post">
-                <label for="day_input">Day</label><br>
-                <input type="text" id="day_input" name="day"><br><br>
-                <label for="start_time_input">Start time:</label><br>
-                <input type="text" id="start_time_input" name="start"><br><br>
-                <label for="end_time_input">End time:</label><br>
-                <input type="text" id="end_time_input" name="end"><br><br>
-                <label for="id_input">Dentist's ID (number):</label><br>
-                <input type="number" id="id_input" name="id" min="1"><br><br>
-                <input type="submit" value="Add dentist" name="submit">
-            </form>
-            <form action="/tool" method="post">
-                <input type="submit" value="Delete last dentist" name="submit">
-            </form>
-        </div>
+    <section id="input_for_roster_generation" style="display: flex; flex-direction: row;">
         <div>
             <h3>Add employees</h3>
             <form action="/tool" method="post">
@@ -53,9 +43,8 @@
                 <input type="number" id="max_hours_input" name="max_hours"><br><br>
                 <label for="max_days_input">Employee maximum weekly days:</label><br>
                 <input type="number" id="max_days_input" name="max_days"><br><br><br>
-                <!-- Available days input here, maybe a selection checklist would work -->
-                <label for="Available_employee_days_checklist">Employee available days:</label><br><br>
-                <section id="Available_employee_days_checklist">
+                <label for="available_employee_days_checklist">Employee available days:</label><br><br>
+                <section id="available_employee_days_checklist">
                     <label for="monday_checkbox">Monday</label><br>
                     <input type="checkbox" id="monday_checkbox" name="available_monday"><br><br>
                     <label for="tuesday_checkbox">Tuesday</label><br>
@@ -69,10 +58,40 @@
                     <label for="saturday_checkbox">Saturday</label><br>
                     <input type="checkbox" id="saturday_checkbox" name="available_saturday"><br><br><br>
                 </section>
-                <!-- Available roles input here, unsure how to do assistant for each dentist -->
-                <input type="text">
-                <input type="submit" value="Add employee" name="submit">
+                <label for="available_employee_roles">Available employee roles:</label><br><br>
+                <section id="available_employee_roles">
+                    <label for="receptionist_checkbox">Receptionist</label><br>
+                    <input type="checkbox" id="receptionist_checkbox" name="available_receptionist"><br><br>
+                    <label for="runner_checkbox">Runner</label><br>
+                    <input type="checkbox" id="runner_checkbox" name="available_runner"><br><br>
+                    <label for="assistant_input">Assistant (enter IDs of dentists which employee may assist, or leave
+                        blank)</label><br>
+                    <input type="text" id="assistant_input" placeholder="1,2,3... <-- Enter IDs of dentists"
+                        name="available_assistants"><br><br>
+                </section>
+                <input type="submit" value="Add employee" name="submit"><br><br>
+            </form>
+            <form action="/tool" method="post">
+                <input type="submit" value="Delete last employee" name="submit">
+            </form>
+        </div>
+        <div>
+            <h3>Add dentist shift</h3>
+            <form action="/tool" method="post">
+                <label for="day_input">Day</label><br>
+                <input type="text" id="day_input" name="day"><br><br>
+                <label for="start_time_input">Start time:</label><br>
+                <input type="text" id="start_time_input" name="start"><br><br>
+                <label for="end_time_input">End time:</label><br>
+                <input type="text" id="end_time_input" name="end"><br><br>
+                <label for="id_input">Dentist's ID (number):</label><br>
+                <input type="number" id="id_input" name="id" min="1"><br><br>
+                <input type="submit" value="Add dentist" name="submit"><br><br>
+            </form>
+            <form action="/tool" method="post">
+                <input type="submit" value="Delete last dentist" name="submit">
             </form>
         </div>
     </section>
+
 </html>

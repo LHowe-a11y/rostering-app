@@ -41,7 +41,6 @@ class DentistSchedule:
         # self.shifts = list(map(lambda x: x.split(":"), raw_shifts))
 
         # Shifts are in the form Day:Start:End:Dentist e.g. 1:0830:1300:2 would mean Monday, 8:30 am to 1:00 pm, Dentist 2.
-        # TODO change shifts into form {"day": "monday", "start": 13.75, "end": 29.25, "id": 2}
 
         for shift in shifts:  # For each shift in the total list of shifts
             # Turn each part of the shift into an integer to allow mathematics
@@ -162,6 +161,8 @@ Employee preference will be weighted based on the number of hours already assign
 
 class Roster:
     def __init__(self, dentists: list, employees: list) -> None:
+        self.timed_out = False
+        self.failed = False
         self.best_roster = None
         self.r = random.Random()
         self.last_seed = (
@@ -239,10 +240,12 @@ class Roster:
 
     def create_roster(self) -> None:
         # necessary declarations/definitions of variables etc
+        self.timed_out = False
+        self.failed = False
         start_time = time.time()
-        max_time = 10  # seconds
+        max_time = 3  # seconds
         n = 100
-        min_calculated = 1  # should be later decided by user
+        min_calculated = 10  # should be later decided by user
 
         # All potential rosters are calculated in this loop
         while True:
@@ -302,8 +305,12 @@ class Roster:
             if len(self.calculated_rosters) >= min_calculated:
                 break
             if time.time() - start_time > max_time:
-                # TODO timeout error message
-                raise TimeoutError("Roster took too long to create.")
+                self.timed_out = True
+                if len(self.calculated_rosters) > 0:
+                    break
+                else:
+                    self.failed = True
+                    return
 
         # sort dict by variance ascending
         self.calculated_rosters = sorted(
