@@ -251,22 +251,22 @@ def tool():
             # Format data from inputs into intended format and sanitise and validate it
             name = sanitise(request.form["name"])
             available_days = []
-            if request.form["available_monday"]:
+            if request.form.get("available_monday"):
                 available_days.append("monday")
-            if request.form["available_tuesday"]:
+            if request.form.get("available_tuesday"):
                 available_days.append("tuesday")
-            if request.form["available_wednesday"]:
+            if request.form.get("available_wednesday"):
                 available_days.append("wednesday")
-            if request.form["available_thursday"]:
+            if request.form.get("available_thursday"):
                 available_days.append("thursday")
-            if request.form["available_friday"]:
+            if request.form.get("available_friday"):
                 available_days.append("friday")
-            if request.form["available_saturday"]:
+            if request.form.get("available_saturday"):
                 available_days.append("saturday")
             available_roles = []
-            if request.form["available_runner"]:
+            if request.form.get("available_runner"):
                 available_roles.append("runner")
-            if request.form["available_receptionist"]:
+            if request.form.get("available_receptionist"):
                 available_roles.append("receptionist")
             assistant_ids = sanitise(request.form["available_assistants"]).split(",")
             for id in assistant_ids:
@@ -279,13 +279,13 @@ def tool():
                         "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
                         "error",
                     )
-                    return redirect("/roster")
+                    return redirect("/tool")
                 except TypeError:
                     flash(
                         "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
                         "error",
                     )
-                    return redirect("/roster")
+                    return redirect("/tool")
                 available_roles.append(f"assistant_{id}")
             new_employee = {
                 "name": name,

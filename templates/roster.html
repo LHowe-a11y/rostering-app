@@ -53,37 +53,27 @@
                 <input type="number" id="max_hours_input" name="max_hours"><br><br>
                 <label for="max_days_input">Employee maximum weekly days:</label><br>
                 <input type="number" id="max_days_input" name="max_days"><br><br><br>
-                <!-- Available days input here, maybe a selection checklist would work -->
                 <label for="available_employee_days_checklist">Employee available days:</label><br><br>
                 <section id="available_employee_days_checklist">
-                    <input type="hidden" name="available_monday" value=False>
-                    <input type="hidden" name="available_tuesday" value=False>
-                    <input type="hidden" name="available_wednesday" value=False>
-                    <input type="hidden" name="available_thursday" value=False>
-                    <input type="hidden" name="available_friday" value=False>
-                    <input type="hidden" name="available_saturday" value=False>
                     <label for="monday_checkbox">Monday</label><br>
-                    <input type="checkbox" id="monday_checkbox" name="available_monday" value=True><br><br>
+                    <input type="checkbox" id="monday_checkbox" name="available_monday"><br><br>
                     <label for="tuesday_checkbox">Tuesday</label><br>
-                    <input type="checkbox" id="tuesday_checkbox" name="available_tuesday" value=True><br><br>
+                    <input type="checkbox" id="tuesday_checkbox" name="available_tuesday"><br><br>
                     <label for="wednesday_checkbox">Wednesday</label><br>
-                    <input type="checkbox" id="wednesday_checkbox" name="available_wednesday" value=True><br><br>
+                    <input type="checkbox" id="wednesday_checkbox" name="available_wednesday"><br><br>
                     <label for="thursday_checkbox">Thursday</label><br>
-                    <input type="checkbox" id="thursday_checkbox" name="available_thursday" value=True><br><br>
+                    <input type="checkbox" id="thursday_checkbox" name="available_thursday"><br><br>
                     <label for="friday_checkbox">Friday</label><br>
-                    <input type="checkbox" id="friday_checkbox" name="available_friday" value=True><br><br>
+                    <input type="checkbox" id="friday_checkbox" name="available_friday"><br><br>
                     <label for="saturday_checkbox">Saturday</label><br>
-                    <input type="checkbox" id="saturday_checkbox" name="available_saturday" value=True><br><br><br>
+                    <input type="checkbox" id="saturday_checkbox" name="available_saturday"><br><br><br>
                 </section>
-                <!-- Available roles input here, unsure how to do assistant for each dentist -->
                 <label for="available_employee_roles">Available employee roles:</label><br><br>
                 <section id="available_employee_roles">
-                    <input type="hidden" name="available_receptionist" value=False>
-                    <input type="hidden" name="available_runner" value=False>
                     <label for="receptionist_checkbox">Receptionist</label><br>
-                    <input type="checkbox" id="receptionist_checkbox" name="available_receptionist" value=True><br><br>
+                    <input type="checkbox" id="receptionist_checkbox" name="available_receptionist"><br><br>
                     <label for="runner_checkbox">Runner</label><br>
-                    <input type="checkbox" id="runner_checkbox" name="available_runner" value=True><br><br>
+                    <input type="checkbox" id="runner_checkbox" name="available_runner"><br><br>
                     <label for="assistant_input">Assistant (enter IDs of dentists which employee may assist)</label><br>
                     <input type="text" id="assistant_input" placeholder="1,2,3... <-- Enter IDs of dentists"
                         name="available_assistants"><br><br>
