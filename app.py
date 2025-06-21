@@ -211,6 +211,10 @@ def tool():
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
                 return redirect("/tool")
+            if request.form["id"] is None:
+                flash(
+                    "Please give an ID for which dentist performs the shift.", "error"
+                )
             new_shift = {
                 "day": day,
                 "start": float(start),
