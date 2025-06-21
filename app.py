@@ -287,10 +287,21 @@ def tool():
                         )
                         return redirect("/tool")
                     available_roles.append(f"assistant_{id}")
+            if name is None:
+                flash("Employee must have name", "error")
+                return redirect("/tool")
+            if request.form["max_days"] is None:
+                max_days = 6
+            else:
+                max_days = request.form["max_days"]
+            if request.form["max_hours"] is None:
+                max_hours = 999
+            else:
+                max_hours = request.form["max_hours"]
             new_employee = {
                 "name": name,
-                "max_hours": int(request.form["max_hours"]),
-                "max_days": int(request.form["max_days"]),
+                "max_hours": int(max_hours),
+                "max_days": int(max_days),
                 "available_days": available_days,
                 "available_roles": available_roles,
             }
