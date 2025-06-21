@@ -123,3 +123,15 @@ class DatabaseManager:
         )
         db.commit()
         db.close()
+
+    def save_roster(
+        self, user_id: int, dentists: str, employees: str, name: str
+    ) -> None:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        cursor.execute(
+            "INSERT INTO saved_rosters (user_id,dentists,employees,roster_name) VALUES (?,?,?,?)",  # Maybe will need quotation marks here, could make f string
+            (user_id, dentists, employees, name),
+        )
+        db.commit()
+        db.close()

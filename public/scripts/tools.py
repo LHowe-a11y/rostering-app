@@ -238,14 +238,14 @@ class Roster:
                 }
                 self.schedule.append(new_shift)
 
-    def create_roster(self) -> None:
+    def create_roster(self, max_t=3, min_calc=10) -> None:
         # necessary declarations/definitions of variables etc
         self.timed_out = False
         self.failed = False
         start_time = time.time()
-        max_time = 3  # seconds
+        max_time = max_t  # seconds
         n = 100
-        min_calculated = 10  # should be later decided by user
+        min_calculated = min_calc  # should be later decided by user
 
         # All potential rosters are calculated in this loop
         while True:

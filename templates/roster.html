@@ -92,6 +92,22 @@
                 <input type="submit" value="Delete last dentist" name="submit">
             </form>
         </div>
+        <div>
+            <h3>Controls</h3>
+            <form action="/tool" method="get">
+                <label for="timeout_time_input">Maximum processing time</label><br>
+                <input type="number" name="timeout" id="timeout_time_input"><br><br>
+                <label for="min_iterations_input">Minimum attempts calculated</label><br>
+                <input type="number" name="iterations" id="min_iterations_input"><br><br>
+                <input type="submit" value="Re-calculate" name="submit">
+            </form><br><br>
+            <p style="font-weight: bold;">Save this roster?</p><br>
+            <form action="/save" method="post">
+                <label for="roster_name_input">Name your lovely roster:</label><br>
+                <input type="text" name="name" id="roster_name_input" placeholder="Unique name"><br><br>
+                <input type="submit" value="Save roster">
+            </form>
+        </div>
     </section>
 
 </html>
