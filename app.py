@@ -186,8 +186,7 @@ def tool():
                 and day != "saturday"
             ):
                 flash("Please give day in lowercase text form", "error")
-                # TODO implement flash messages into roster page template
-                return redirect("/login")
+                return redirect("/tool")
             start = sanitise(request.form["start"])
             try:
                 test = float(start)  # noqa: F841
@@ -195,12 +194,12 @@ def tool():
                 flash(
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
-                return redirect("/login")
+                return redirect("/tool")
             except TypeError:
                 flash(
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
-                return redirect("/login")
+                return redirect("/tool")
             end = sanitise(request.form["start"])
             try:
                 test = float(end)  # noqa: F841
@@ -208,12 +207,12 @@ def tool():
                 flash(
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
-                return redirect("/login")
+                return redirect("/tool")
             except TypeError:
                 flash(
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
-                return redirect("/login")
+                return redirect("/tool")
             new_shift = {
                 "day": day,
                 "start": float(start),
