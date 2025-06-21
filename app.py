@@ -180,7 +180,10 @@ def tool():
                 and day != "friday"
                 and day != "saturday"
             ):
-                flash("Please give day in lowercase text form", "error")
+                flash(
+                    "Please give day in lowercase text form. Must have a day, monday-saturday.",
+                    "error",
+                )
                 return redirect("/tool")
             start = sanitise(request.form["start"])
             try:
