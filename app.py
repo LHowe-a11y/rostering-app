@@ -349,7 +349,16 @@ def tool():
         employees = json.loads(json_employees)
         if dentists != [] and employees != [] and len(employees) > 1:
             display_roster = Roster(dentists, employees)
-            display_roster.create_roster()
+            if request.method == "GET":
+                timeout = request.form["timeout"]
+                iterations = request.form["iterations"]
+                if timeout is None:
+                    timeout = 3
+                if iterations is None:
+                    iterations = 10
+                display_roster.create_roster(int(timeout), int(iterations))
+            else:
+                display_roster.create_roster()
             if display_roster.failed:
                 flash(
                     "The program timed out, and could not find any possible roster configurations. You might be able to change some settings to get a different outcome, but consider re-arranging your schedule.",
