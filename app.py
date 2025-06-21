@@ -211,7 +211,7 @@ def tool():
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
                 return redirect("/tool")
-            if request.form["id"] is None:
+            if request.form["id"] is None or request.form["id"] == "":
                 flash(
                     "Please give an ID for which dentist performs the shift.", "error"
                 )
@@ -294,14 +294,14 @@ def tool():
                         )
                         return redirect("/tool")
                     available_roles.append(f"assistant_{id}")
-            if name is None:
+            if name is None or name == "":
                 flash("Employee must have name", "error")
                 return redirect("/tool")
-            if request.form["max_days"] is None:
+            if request.form["max_days"] is None or request.form["max_days"] == "":
                 max_days = 6
             else:
                 max_days = request.form["max_days"]
-            if request.form["max_hours"] is None:
+            if request.form["max_hours"] is None or request.form["max_hours"] == "":
                 max_hours = 999
             else:
                 max_hours = request.form["max_hours"]
@@ -349,7 +349,7 @@ def tool():
         employees = json.loads(json_employees)
         if dentists != [] and employees != [] and len(employees) > 1:
             display_roster = Roster(dentists, employees)
-            if request.method == "GET":
+            if request.method == "GET" and len(request.form.getlist("submit")) > 0:
                 timeout = request.form["timeout"]
                 iterations = request.form["iterations"]
                 if timeout is None:
@@ -378,6 +378,40 @@ def tool():
     )
     table = [["No roster to display."]]
     return render_template("roster.html", table=table)
+
+
+@app.route("/save", methods=["POST", "GET"])  # type: ignore
+def save_roster():
+    if not session.get("logged_in"):
+        return redirect("/login")
+    if request.method == "GET":
+        return redirect("/")
+    # Get roster info
+    user_id = session.get("id")
+    dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
+    employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+    if (dentists is None or len(json.loads(dentists)) == 0) and (
+        employees is None or len(json.loads(employees)) == 0
+    ):
+        flash(
+            "You are trying to save a roster with no data. An incomplete roster may be saved, but not one with no data.",
+            "error",
+        )
+    else:
+        if dentists is None:
+            dentists = json.dumps([])
+        if employees is None:
+            employees = json.dumps([])
+    roster_name = request.form["name"]
+    if roster_name is None:
+        flash("To save a roster you must name it.", "error")
+        return redirect("/tool")
+    else:
+        roster_name = sanitise(roster_name)
+    manager.save_roster(user_id, dentists, employees, roster_name)  # type: ignore
+    flash("Successfully saved this roster!", "message")
+    flash("You can find your saved rosters by opening the menu.", "info")
+    return redirect("/tool")
 
 
 if __name__ == "__main__":
