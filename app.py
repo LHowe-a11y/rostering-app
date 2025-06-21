@@ -217,7 +217,7 @@ def tool():
                 "day": day,
                 "start": float(start),
                 "end": float(end),
-                "id": request.form["id"],
+                "id": int(request.form["id"]),
             }
             dental_shifts.append(new_shift)
             json_dentists = json.dumps(dental_shifts)
@@ -294,8 +294,8 @@ def tool():
                     available_roles.append(f"assistant_{id}")
             new_employee = {
                 "name": name,
-                "max_hours": request.form["max_hours"],
-                "max_days": request.form["max_days"],
+                "max_hours": int(request.form["max_hours"]),
+                "max_days": int(request.form["max_days"]),
                 "available_days": available_days,
                 "available_roles": available_roles,
             }
