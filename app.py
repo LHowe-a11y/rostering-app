@@ -268,25 +268,31 @@ def tool():
                 available_roles.append("runner")
             if request.form.get("available_receptionist"):
                 available_roles.append("receptionist")
-            assistant_ids = sanitise(request.form["available_assistants"]).split(",")
-            for id in assistant_ids:
-                try:
-                    id_int = int(id)
-                    if id_int <= 0:
-                        raise ValueError()
-                except ValueError:
-                    flash(
-                        "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
-                        "error",
-                    )
-                    return redirect("/tool")
-                except TypeError:
-                    flash(
-                        "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
-                        "error",
-                    )
-                    return redirect("/tool")
-                available_roles.append(f"assistant_{id}")
+            if not (
+                request.form["available_assistants"] is None
+                or request.form["available_assistants"] == ""
+            ):
+                assistant_ids = sanitise(request.form["available_assistants"]).split(
+                    ","
+                )
+                for id in assistant_ids:
+                    try:
+                        id_int = int(id)
+                        if id_int <= 0:
+                            raise ValueError()
+                    except ValueError:
+                        flash(
+                            "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
+                            "error",
+                        )
+                        return redirect("/tool")
+                    except TypeError:
+                        flash(
+                            "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
+                            "error",
+                        )
+                        return redirect("/tool")
+                    available_roles.append(f"assistant_{id}")
             new_employee = {
                 "name": name,
                 "max_hours": request.form["max_hours"],
