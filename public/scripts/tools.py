@@ -400,5 +400,7 @@ class Roster:
                 )
             shift_time = str(shift["start"]) + " - " + str(shift["end"])
             table[i].append(shift_time)
-            table[i + 1].append(shift["assignee"]["name"])
+            table[i + 1].append(
+                str(shift["assignee"]["name"] + ", as " + shift["role"] + "  ")
+            )
         return table
