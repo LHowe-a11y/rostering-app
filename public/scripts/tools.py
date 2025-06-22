@@ -25,6 +25,7 @@ def check_hash(input: str, hash: bytes) -> bool:
 
 class DentistSchedule:
     def __init__(self, shifts: list) -> None:
+        self.too_many_dentists = False
         # raw_shifts = shifts
         self.monday = []
         self.tuesday = []
@@ -79,9 +80,7 @@ class DentistSchedule:
             or len(self.friday) > 2
             or len(self.saturday) > 2
         ):
-            raise SyntaxError(
-                "More than two dentists shifted in one day, this exceeds the minimum requirements and is not included in program!"
-            )
+            self.too_many_dentists = True
 
     def int_to_day_list(self, integer: int) -> list:
         match integer:

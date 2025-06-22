@@ -366,6 +366,13 @@ def tool():
         employees = json.loads(json_employees)
         if dentists != [] and employees != [] and len(employees) > 1:
             display_roster = Roster(dentists, employees)
+            if display_roster.dentists.too_many_dentists:
+                flash(
+                    "More than 2 dentists have been scheduled on one day, this exceeds the expectations and boundaries of the program.",
+                    "error",
+                )
+                table = [["No roster to display."]]
+                return render_template("roster.html", table=table)
             if request.method == "GET" and len(request.form.getlist("submit")) > 0:
                 timeout = request.form["timeout"]
                 iterations = request.form["iterations"]
