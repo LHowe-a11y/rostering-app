@@ -652,4 +652,4 @@ if __name__ == "__main__":
     # Secret key for encryption
     app.secret_key = os.urandom(24)
     # Debug mode, run web server!
-    app.run(debug=True)
+    app.run()
