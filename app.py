@@ -457,7 +457,7 @@ def load_roster():
     return redirect("/tool")
 
 
-@app.route("/deletemyaccount", methods="POST")
+@app.route("/deletemyaccount", methods=["POST"])
 def delete_account():
     if not session.get("logged_in"):
         return redirect("/login")
