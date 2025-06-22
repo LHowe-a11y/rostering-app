@@ -8,7 +8,16 @@
 </head>
 
 <body>
-
+    <h3>Delete account</h3>
+    <form action="/deletemyaccount" method="post">
+        <label for="username_input">Confirm username:</label><br>
+        <input type="text" id="username_input" name="username"><br><br>
+        <label for="password_input">Confirm password:</label><br>
+        <input type="password" name="password" id="password_input"><br><br>
+        <label for="delete_account_confirmation_checkbox">I really do want to delete my account</label>
+        <input type="checkbox" name="confirm_delete" id="delete_account_confirmation_checkbox"><br><br>
+        <input type="submit" value="Delete my account">
+    </form>
 </body>
 
 </html>

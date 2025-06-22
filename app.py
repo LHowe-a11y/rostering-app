@@ -457,6 +457,27 @@ def load_roster():
     return redirect("/tool")
 
 
+@app.route("/deletemyaccount", methods="POST")
+def delete_account():
+    if not session.get("logged_in"):
+        return redirect("/login")
+    if request.form.get("confirm_delete"):
+        username = sanitise(request.form["username"])
+        password = sanitise(request.form["password"])
+        if manager.verify_login(username, password):
+            user_id = manager.user_id(username, password)
+            if user_id == session.get("id"):
+                manager.delete_account(user_id)
+                session["logged_in"] = False
+                session["id"] = 0
+                flash("Account deleted.", "info")
+                return redirect("/login")
+    session["logged_in"] = False
+    session["id"] = 0
+    flash("Failed to delete account due to incorrect details.", "error")
+    return redirect("/login")
+
+
 if __name__ == "__main__":
     # Secret key for encryption
     app.secret_key = os.urandom(24)
