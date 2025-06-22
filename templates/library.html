@@ -8,7 +8,39 @@
 </head>
 
 <body>
-
+    <h2>Saved rosters</h2>
+    <a href="/tool">Back</a>
+    <h3>Loading a roster will replace the roster currently in progress.</h3>
+    <!-- <table>
+        <tr>
+            <th>Day</th>
+            <th>Shifts</th>
+            <th> </th>
+            <th> </th>
+            <th> </th>
+        </tr>
+        {% for row in table %}
+        <tr>
+            {% for item in row %}
+            <td>{{ item }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </table> -->
+    {% for name, id in rosters.items() %}
+    <div>
+        <p style="font-weight: bold;">{{ name }}</p><br>
+        <form action="/load" method="post"><input type="hidden" name="roster_id" value="{{ id }}"><input type="hidden"
+                name="username" value="{{ username }}"><input type="submit" value="Load"><br><br>
+        </form>
+        <form action="/save" method="post">
+            <input type="hidden" name="roster_id" value="{{ id }}">
+            <label for="deletion_confirmation_checkbox">Check box and press button to delete saved roster:</label><br>
+            <div style="display: flex; flex-direction: row;"><input type="checkbox" name="confirm_delete"
+                    id="deletion_confirmation_checkbox"><input type="submit" value="Delete roster" name="submit"></div>
+        </form>
+    </div><br><br>
+    {% endfor %}
 </body>
 
 </html>

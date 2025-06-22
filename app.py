@@ -386,31 +386,74 @@ def save_roster():
         return redirect("/login")
     if request.method == "GET":
         return redirect("/")
-    # Get roster info
-    user_id = session.get("id")
-    dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
-    employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
-    if (dentists is None or len(json.loads(dentists)) == 0) and (
-        employees is None or len(json.loads(employees)) == 0
-    ):
-        flash(
-            "You are trying to save a roster with no data. An incomplete roster may be saved, but not one with no data.",
-            "error",
-        )
-    else:
-        if dentists is None:
-            dentists = json.dumps([])
-        if employees is None:
-            employees = json.dumps([])
-    roster_name = request.form["name"]
-    if roster_name is None:
-        flash("To save a roster you must name it.", "error")
+    if request.form["submit"] == "Save roster":
+        # Get roster info
+        user_id = session.get("id")
+        dentists = manager.fetch_in_progress_dentists(user_id)  # type: ignore
+        employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+        if (dentists is None or len(json.loads(dentists)) == 0) and (
+            employees is None or len(json.loads(employees)) == 0
+        ):
+            flash(
+                "You are trying to save a roster with no data. An incomplete roster may be saved, but not one with no data.",
+                "error",
+            )
+        else:
+            if dentists is None:
+                dentists = json.dumps([])
+            if employees is None:
+                employees = json.dumps([])
+        roster_name = request.form["name"]
+        if roster_name is None:
+            flash("To save a roster you must name it.", "error")
+            return redirect("/tool")
+        else:
+            roster_name = sanitise(roster_name)
+        manager.save_roster(user_id, dentists, employees, roster_name)  # type: ignore
+        flash("Successfully saved this roster!", "message")
+        flash("You can find your saved rosters by opening the menu.", "info")
         return redirect("/tool")
-    else:
-        roster_name = sanitise(roster_name)
-    manager.save_roster(user_id, dentists, employees, roster_name)  # type: ignore
-    flash("Successfully saved this roster!", "message")
-    flash("You can find your saved rosters by opening the menu.", "info")
+    elif request.form["submit"] == "Delete roster":
+        if request.form.get("confirm_delete"):
+            manager.delete_roster(int(request.form["roster_id"]))
+        return redirect("/library")
+
+
+@app.route("/profile")
+def profile():
+    return render_template("profile.html")
+
+
+@app.route("/library")
+def library():
+    if not session.get("logged_in"):
+        return redirect("/login")
+    user_id = session.get("id")
+    return render_template(
+        "library.html",
+        rosters=manager.retrieve_saved_rosters(user_id),  # type: ignore
+        username=manager.fetch_username(user_id),  # type: ignore
+    )
+
+
+@app.route("/load", methods=["POST"])
+def load_roster():
+    if not session.get("logged_in"):
+        return redirect("/login")
+    user_id = session.get("id")
+    username = request.form["username"]
+    if manager.fetch_username(user_id) != username:  # type: ignore
+        flash("You are trying to load a roster that does not belong to you.", "error")
+        return redirect("/tool")
+    roster_id = int(request.form["roster_id"])
+    roster = manager.fetch_saved_roster(roster_id)
+    if roster[0] != user_id:
+        flash("You are trying to load a roster that does not belong to you.", "error")
+        return redirect("/tool")
+    dentists = roster[1]
+    employees = roster[2]
+    manager.update_in_progress_dentists(user_id, dentists)  # type: ignore
+    manager.update_in_progress_employees(user_id, employees)  # type: ignore
     return redirect("/tool")
 
 
