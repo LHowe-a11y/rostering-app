@@ -29,6 +29,7 @@
     </table> -->
     {% for name, id in rosters.items() %}
     <div>
+        <hr><br>
         <p style="font-weight: bold;">{{ name }}</p><br>
         <form action="/load" method="post"><input type="hidden" name="roster_id" value="{{ id }}"><input type="hidden"
                 name="username" value="{{ username }}"><input type="submit" value="Load"><br><br>
