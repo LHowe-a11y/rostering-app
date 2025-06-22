@@ -8,6 +8,12 @@
 </head>
 
 <body>
+    <h2>Account controls</h2>
+    <button onclick="history.back()">Back</button><br><br>
+    <h3>Log out</h3>
+    <label for="logout_button">Press this button to log out. Your current in-progress roster is saved.</label><br>
+    <form action="/login" method="post"><input type="submit" value="Logout button" name="submit" id="logout_button">
+    </form><br><br><br>
     <h3>Delete account</h3>
     <form action="/deletemyaccount" method="post">
         <label for="username_input">Confirm username:</label><br>

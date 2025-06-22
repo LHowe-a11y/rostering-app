@@ -111,6 +111,10 @@ def home():
 def login():
     # If attempt at login
     if request.method == "POST":
+        if request.form["submit"] == "Logout button":
+            session["logged_in"] = False
+            session["id"] = 0
+            return redirect("/login")
         # Get login data and sanitise (escapes bad inputs)
         username = sanitise(request.form["username"])
         password = sanitise(request.form["password"])
