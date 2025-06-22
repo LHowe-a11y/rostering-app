@@ -198,7 +198,7 @@ def tool():
                     "Please enter start and end times in hours, decimal, e.g. 9am-5:45pm is 9.0-17.75"
                 )
                 return redirect("/tool")
-            end = sanitise(request.form["start"])
+            end = sanitise(request.form["end"])
             try:
                 test = float(end)  # noqa: F841
             except ValueError:
