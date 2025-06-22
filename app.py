@@ -302,7 +302,7 @@ def tool():
             else:
                 max_days = request.form["max_days"]
             if request.form["max_hours"] is None or request.form["max_hours"] == "":
-                max_hours = 999
+                max_hours = 38
             else:
                 max_hours = request.form["max_hours"]
             new_employee = {
