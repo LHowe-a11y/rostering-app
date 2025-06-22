@@ -29,8 +29,8 @@
         <table>
             <tr>
                 <th>Name</th>
-                <th>Max hours</th>
-                <th>Max days</th>
+                <th>Max hours </th>
+                <th>Max days </th>
                 <th>Available days</th>
                 <th>Allowed roles</th>
             </tr>
@@ -43,51 +43,57 @@
             {% endfor %}
         </table>
     </section>
-    <section id="input_for_roster_generation" style="display: flex; flex-direction: row;">
+    <section id="input_for_roster_generation" style="display: flex; flex-direction: row; padding-top: 30px;">
         <div>
             <h3>Add employees</h3>
             <form action="/employees" method="post">
-                <label for="name_input">Employee name:</label><br>
-                <input type="text" id="name_input" name="name"><br><br>
-                <label for="max_hours_input">Employee maximum weekly hours:</label><br>
-                <input type="number" id="max_hours_input" name="max_hours"><br><br>
-                <label for="max_days_input">Employee maximum weekly days:</label><br>
-                <input type="number" id="max_days_input" name="max_days"><br><br><br>
-                <label for="available_employee_days_checklist">Employee available days:</label><br><br>
-                <section id="available_employee_days_checklist">
-                    <label for="monday_checkbox">Monday</label><br>
-                    <input type="checkbox" id="monday_checkbox" name="available_monday"><br><br>
-                    <label for="tuesday_checkbox">Tuesday</label><br>
-                    <input type="checkbox" id="tuesday_checkbox" name="available_tuesday"><br><br>
-                    <label for="wednesday_checkbox">Wednesday</label><br>
-                    <input type="checkbox" id="wednesday_checkbox" name="available_wednesday"><br><br>
-                    <label for="thursday_checkbox">Thursday</label><br>
-                    <input type="checkbox" id="thursday_checkbox" name="available_thursday"><br><br>
-                    <label for="friday_checkbox">Friday</label><br>
-                    <input type="checkbox" id="friday_checkbox" name="available_friday"><br><br>
-                    <label for="saturday_checkbox">Saturday</label><br>
-                    <input type="checkbox" id="saturday_checkbox" name="available_saturday"><br><br><br>
-                </section>
-                <label for="available_employee_roles">Available employee roles:</label><br><br>
-                <section id="available_employee_roles">
-                    <label for="receptionist_checkbox">Receptionist</label><br>
-                    <input type="checkbox" id="receptionist_checkbox" name="available_receptionist"><br><br>
-                    <label for="runner_checkbox">Runner</label><br>
-                    <input type="checkbox" id="runner_checkbox" name="available_runner"><br><br>
-                    <label for="assistant_input">Assistant (enter IDs of dentists which employee may assist, or leave
-                        blank)</label><br>
-                    <input type="text" id="assistant_input" placeholder="1,2,3... <-- Enter IDs of dentists"
-                        name="available_assistants"><br><br>
-                </section>
-                <input type="submit" value="Add employee" name="submit"><br><br>
+                <div style="display: flex; flex-direction: row;">
+                    <div>
+                        <label for="name_input">Employee name:</label><br>
+                        <input type="text" id="name_input" name="name"><br><br>
+                        <label for="max_hours_input">Employee maximum weekly hours:</label><br>
+                        <input type="number" id="max_hours_input" name="max_hours"><br><br>
+                        <label for="max_days_input">Employee maximum weekly days:</label><br>
+                        <input type="number" id="max_days_input" name="max_days"><br><br><br>
+                        <label for="available_employee_days_checklist">Employee available days:</label><br><br>
+                        <section id="available_employee_days_checklist">
+                            <label for="monday_checkbox">Monday</label><br>
+                            <input type="checkbox" id="monday_checkbox" name="available_monday"><br><br>
+                            <label for="tuesday_checkbox">Tuesday</label><br>
+                            <input type="checkbox" id="tuesday_checkbox" name="available_tuesday"><br><br>
+                            <label for="wednesday_checkbox">Wednesday</label><br>
+                            <input type="checkbox" id="wednesday_checkbox" name="available_wednesday"><br><br>
+                            <label for="thursday_checkbox">Thursday</label><br>
+                            <input type="checkbox" id="thursday_checkbox" name="available_thursday"><br><br>
+                            <label for="friday_checkbox">Friday</label><br>
+                            <input type="checkbox" id="friday_checkbox" name="available_friday"><br><br>
+                            <label for="saturday_checkbox">Saturday</label><br>
+                            <input type="checkbox" id="saturday_checkbox" name="available_saturday"><br><br><br>
+                        </section>
+                    </div>
+                    <div style="padding-left: 25px; padding-right: 25px; padding-top: 194px;">
+                        <label for="available_employee_roles">Available employee roles:</label><br><br>
+                        <section id="available_employee_roles">
+                            <label for="receptionist_checkbox">Receptionist</label><br>
+                            <input type="checkbox" id="receptionist_checkbox" name="available_receptionist"><br><br>
+                            <label for="runner_checkbox">Runner</label><br>
+                            <input type="checkbox" id="runner_checkbox" name="available_runner"><br><br>
+                            <label for="assistant_input">Assistant (enter IDs of dentists which employee may assist, or
+                                leave
+                                blank)</label><br>
+                            <input type="text" id="assistant_input" placeholder="1,2,3... <-- Enter IDs of dentists"
+                                name="available_assistants"><br><br>
+                        </section>
+                        <input type="submit" value="Add employee" name="submit"><br><br>
+                    </div>
+                </div>
             </form>
         </div>
         <div>
+            <h3>Delete employees</h3>
             <form action="/employees" method="post">
                 <input type="submit" value="Delete last employee" name="submit">
             </form><br><br>
-        </div>
-        <div>
             <form action="/employees" method="post">
                 <input type="text" name="employee_name" id="delete_employee_name_input" placeholder="Employee name">
                 <input type="submit" value="Delete specific employee" name="submit">

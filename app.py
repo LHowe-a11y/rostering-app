@@ -444,17 +444,17 @@ def employees():
                             "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
                             "error",
                         )
-                        return redirect("/tool")
+                        return redirect("/employees")
                     except TypeError:
                         flash(
                             "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
                             "error",
                         )
-                        return redirect("/tool")
+                        return redirect("/employees")
                     available_roles.append(f"assistant_{id}")
             if name is None or name == "":
                 flash("Employee must have name", "error")
-                return redirect("/tool")
+                return redirect("/employees")
             if request.form["max_days"] is None or request.form["max_days"] == "":
                 max_days = 6
             else:
@@ -513,7 +513,7 @@ def employees():
     table = []
     for employee in employees:
         row = []
-        row.append(employee["name"])
+        row.append(str(employee["name"] + "    "))
         row.append(str(employee["max_hours"]))
         row.append(str(employee["max_days"]))
         string = ""
@@ -523,6 +523,7 @@ def employees():
                 string += ", "
             string += day
             i += 1
+        string += "  "
         row.append(string)
         string = ""
         i = 0
@@ -531,6 +532,7 @@ def employees():
                 string += ", "
             string += role
             i += 1
+        string += "  "
         row.append(string)
         table.append(row)
 
