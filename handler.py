@@ -167,3 +167,10 @@ class DatabaseManager:
         cursor.execute(f"DELETE FROM saved_rosters WHERE roster_id = {roster_id}")
         db.commit()
         db.close()
+
+    def delete_account(self, user_id: int) -> None:
+        db = sql.connect(".database/accounts.db")
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM accounts WHERE id = {user_id}")
+        db.commit()
+        db.close()
