@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dental Roster Creation</title>
+    <title>Employee management</title>
 </head>
 
 <body>
-    <section id="input_for_roster_generation" style="display: flex; flex-direction: row;">
+    <section id="input_for_employees" style="display: flex; flex-direction: row;">
         <div>
             {% with messages = get_flashed_messages() %}
             {% if messages %}
@@ -21,17 +21,18 @@
         <nav>
             <a href="/library">Saved rosters</a>
             <a href="/profile">Account controls</a>
-            <a href="/employees">Manage employees</a>
+            <a href="/tool">Generate roster/dentists' shifts</a>
         </nav>
     </section>
-    <section id="roster_table">
+    <section id="employee_table">
+        <h3>Employees</h3>
         <table>
             <tr>
-                <th>Day</th>
-                <th>Shifts</th>
-                <th> </th>
-                <th> </th>
-                <th> </th>
+                <th>Name</th>
+                <th>Max hours</th>
+                <th>Max days</th>
+                <th>Available days</th>
+                <th>Allowed roles</th>
             </tr>
             {% for row in table %}
             <tr>
@@ -43,9 +44,9 @@
         </table>
     </section>
     <section id="input_for_roster_generation" style="display: flex; flex-direction: row;">
-        <!-- <div>
+        <div>
             <h3>Add employees</h3>
-            <form action="/tool" method="post">
+            <form action="/employees" method="post">
                 <label for="name_input">Employee name:</label><br>
                 <input type="text" id="name_input" name="name"><br><br>
                 <label for="max_hours_input">Employee maximum weekly hours:</label><br>
@@ -80,41 +81,16 @@
                 </section>
                 <input type="submit" value="Add employee" name="submit"><br><br>
             </form>
-            <form action="/tool" method="post">
-                <input type="submit" value="Delete last employee" name="submit">
-            </form>
-        </div> -->
-        <div>
-            <h3>Add dentist shift</h3>
-            <form action="/tool" method="post">
-                <label for="day_input">Day</label><br>
-                <input type="text" id="day_input" name="day"><br><br>
-                <label for="start_time_input">Start time:</label><br>
-                <input type="text" id="start_time_input" name="start"><br><br>
-                <label for="end_time_input">End time:</label><br>
-                <input type="text" id="end_time_input" name="end"><br><br>
-                <label for="id_input">Dentist's ID (number):</label><br>
-                <input type="number" id="id_input" name="id" min="1"><br><br>
-                <input type="submit" value="Add dentist" name="submit"><br><br>
-            </form>
-            <form action="/tool" method="post">
-                <input type="submit" value="Delete last dentist" name="submit">
-            </form>
         </div>
         <div>
-            <h3>Controls</h3>
-            <form action="/tool" method="get">
-                <label for="timeout_time_input">Maximum processing time</label><br>
-                <input type="number" name="timeout" id="timeout_time_input"><br><br>
-                <label for="min_iterations_input">Minimum attempts calculated</label><br>
-                <input type="number" name="iterations" id="min_iterations_input"><br><br>
-                <input type="submit" value="Re-calculate" name="submit">
+            <form action="/employees" method="post">
+                <input type="submit" value="Delete last employee" name="submit">
             </form><br><br>
-            <p style="font-weight: bold;">Save this roster?</p><br>
-            <form action="/save" method="post">
-                <label for="roster_name_input">Name your lovely roster:</label><br>
-                <input type="text" name="name" id="roster_name_input" placeholder="Unique name"><br><br>
-                <input type="submit" value="Save roster" name="submit">
+        </div>
+        <div>
+            <form action="/employees" method="post">
+                <input type="text" name="employee_name" id="delete_employee_name_input" placeholder="Employee name">
+                <input type="submit" value="Delete specific employee" name="submit">
             </form>
         </div>
     </section>

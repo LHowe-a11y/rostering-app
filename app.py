@@ -331,6 +331,19 @@ def tool():
                     employee_list.pop()
                     json_employees = json.dumps(employee_list)
                     manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
+        elif request.form["submit"] == "Delete specific employee":
+            user_id = session.get("id")
+            json_old_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+            employee_name = sanitise(request.form["employee_name"])
+            # Verify there is something to delete
+            if json_old_employees is not None:
+                employee_list = json.loads(json_old_employees)
+                employee_list_enum = enumerate(employee_list)
+                for employee in employee_list_enum:
+                    if employee[1]["name"] == employee_name:
+                        employee_list.pop(employee[0])
+                json_employees = json.dumps(employee_list)
+                manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
 
     # # Render template using test data
     # blank_roster = Roster(example_dentists, example_employees)
@@ -378,6 +391,150 @@ def tool():
     )
     table = [["No roster to display."]]
     return render_template("roster.html", table=table)
+
+
+@app.route("/employees", methods=["POST", "GET"])
+def employees():
+    if not session.get("logged_in"):
+        return redirect("/login")
+    if request.method == "POST":
+        if request.form["submit"] == "Add employee":
+            # Fetch data
+            user_id = session.get("id")
+            json_old_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+            # Prevent error from non-existent database entry
+            if json_old_employees is None:
+                employee_list = []
+            else:
+                employee_list = json.loads(json_old_employees)
+            # Format data from inputs into intended format and sanitise and validate it
+            name = sanitise(request.form["name"])
+            available_days = []
+            if request.form.get("available_monday"):
+                available_days.append("monday")
+            if request.form.get("available_tuesday"):
+                available_days.append("tuesday")
+            if request.form.get("available_wednesday"):
+                available_days.append("wednesday")
+            if request.form.get("available_thursday"):
+                available_days.append("thursday")
+            if request.form.get("available_friday"):
+                available_days.append("friday")
+            if request.form.get("available_saturday"):
+                available_days.append("saturday")
+            available_roles = []
+            if request.form.get("available_runner"):
+                available_roles.append("runner")
+            if request.form.get("available_receptionist"):
+                available_roles.append("receptionist")
+            if not (
+                request.form["available_assistants"] is None
+                or request.form["available_assistants"] == ""
+            ):
+                assistant_ids = sanitise(request.form["available_assistants"]).split(
+                    ","
+                )
+                for id in assistant_ids:
+                    try:
+                        id_int = int(id)
+                        if id_int <= 0:
+                            raise ValueError()
+                    except ValueError:
+                        flash(
+                            "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
+                            "error",
+                        )
+                        return redirect("/tool")
+                    except TypeError:
+                        flash(
+                            "Please enter the IDs of the dentists for which an employee may act as an assistant. Separate each by commas, no spaces, no extra characters after the final id or before the first. IDs are always positive integers.",
+                            "error",
+                        )
+                        return redirect("/tool")
+                    available_roles.append(f"assistant_{id}")
+            if name is None or name == "":
+                flash("Employee must have name", "error")
+                return redirect("/tool")
+            if request.form["max_days"] is None or request.form["max_days"] == "":
+                max_days = 6
+            else:
+                max_days = request.form["max_days"]
+            if request.form["max_hours"] is None or request.form["max_hours"] == "":
+                max_hours = 38
+            else:
+                max_hours = request.form["max_hours"]
+            new_employee = {
+                "name": name,
+                "max_hours": int(max_hours),
+                "max_days": int(max_days),
+                "available_days": available_days,
+                "available_roles": available_roles,
+            }
+            employee_list.append(new_employee)
+            json_employees = json.dumps(employee_list)
+            # Create new database entry to update if none exists
+            if json_old_employees is None:
+                manager.new_in_progress(user_id)  # type: ignore
+            # Update in progress database
+            manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
+        elif request.form["submit"] == "Delete last employee":
+            # fetch data
+            user_id = session.get("id")
+            json_old_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+            # Verify there is something to delete
+            if json_old_employees is not None:
+                employee_list = json.loads(json_old_employees)
+                if employee_list != []:
+                    # delete
+                    employee_list.pop()
+                    json_employees = json.dumps(employee_list)
+                    manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
+        elif request.form["submit"] == "Delete specific employee":
+            user_id = session.get("id")
+            json_old_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+            employee_name = sanitise(request.form["employee_name"])
+            # Verify there is something to delete
+            if json_old_employees is not None:
+                employee_list = json.loads(json_old_employees)
+                employee_list_enum = enumerate(employee_list)
+                for employee in employee_list_enum:
+                    if employee[1]["name"] == employee_name:
+                        employee_list.pop(employee[0])
+                json_employees = json.dumps(employee_list)
+                manager.update_in_progress_employees(user_id, json_employees)  # type: ignore
+
+    user_id = session.get("id")
+    json_employees = manager.fetch_in_progress_employees(user_id)  # type: ignore
+    if json_employees is not None:
+        employees = json.loads(json_employees)
+    else:
+        employees = []
+
+    table = []
+    for employee in employees:
+        row = []
+        row.append(employee["name"])
+        row.append(str(employee["max_hours"]))
+        row.append(str(employee["max_days"]))
+        string = ""
+        i = 0
+        for day in employee["available_days"]:
+            if i >= 1:
+                string += ", "
+            string += day
+            i += 1
+        row.append(string)
+        string = ""
+        i = 0
+        for role in employee["available_roles"]:
+            if i >= 1:
+                string += ", "
+            string += role
+            i += 1
+        row.append(string)
+        table.append(row)
+
+    return render_template("employees.html", table=table)
 
 
 @app.route("/save", methods=["POST", "GET"])  # type: ignore
