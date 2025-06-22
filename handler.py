@@ -135,3 +135,35 @@ class DatabaseManager:
         )
         db.commit()
         db.close()
+
+    def retrieve_saved_rosters(self, user_id: int) -> dict:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        res = cursor.execute(
+            f"SELECT roster_name, roster_id FROM saved_rosters WHERE user_id = {user_id}"
+        )
+        dictionary = {}
+        while True:
+            row = res.fetchone()
+            if row is None:
+                break
+            dictionary[row[0]] = row[1]
+        db.close()
+        return dictionary
+
+    def fetch_saved_roster(self, roster_id: int) -> tuple:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        res = cursor.execute(
+            f"SELECT user_id, dentists, employees FROM saved_rosters WHERE roster_id = {roster_id}"
+        )
+        roster = res.fetchone()
+        db.close()
+        return roster
+
+    def delete_roster(self, roster_id: int) -> None:
+        db = sql.connect(".database/rosters.db")
+        cursor = db.cursor()
+        cursor.execute(f"DELETE FROM saved_rosters WHERE roster_id = {roster_id}")
+        db.commit()
+        db.close()
